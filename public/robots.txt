@@ -1,0 +1,3 @@
+User-agent: *
+
+Sitemap: https://athos00.github.io/sitemap.xml
