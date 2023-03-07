@@ -124,5 +124,12 @@
     "title": "Regular expressions",
     "section": "Greedy vs ungreedy matching",
     "text": "Greedy vs ungreedy matching\nWhat went wrong here?\n\ntext = \"<div class='main'> <div> <a href='here.pdf'>Here!</a> </div> </div>\"\n\n\nstr_extract(text, \"<div>.*</div>\")\n\n[1] \"<div> <a href='here.pdf'>Here!</a> </div> </div>\"\n\n\n\nIf you add ? after a repeater, the matching will be non-greedy (find the shortest possible match, not the longest).\n\nstr_extract(text, \"<div>.*?</div>\")\n\n[1] \"<div> <a href='here.pdf'>Here!</a> </div>\"\n\n\n\n\n🔗 athos00.github.io"
+  },
+  {
+    "objectID": "slides/regexp.html#exercise",
+    "href": "slides/regexp.html#exercise",
+    "title": "Regular expressions",
+    "section": "Exercise",
+    "text": "Exercise\n\n\n\nDownload the files secret-message.txt and emails.txt using the command below in the console:\n\n\n\n\n\n\nWARNING\n\n\nDO NOT VIEW THE FILE – YOUR CONTAINER MAY CRASH!\n\n\n\n\ndownload.file(\"https://athos00.github.io/data/secret-message.txt\", \n              destfile = \"secret-message.txt\")\n\ndownload.file(\"https://athos00.github.io/data/emails.txt\", \n              destfile = \"emails.txt\")\n\nHint: read in the file as a string with read_lines()\npart 1\nIn secret-message.txt, find the secret message. It will be of the form DataFest{secret-message} where secret-message is replaced by some other text.\npart 2\nIn emails.txt extract the unique part of the email address (part before the “@”) and count the number of each hosting domain, i.e. count how many emails are Duke emails and how many are gmail."
   }
 ]

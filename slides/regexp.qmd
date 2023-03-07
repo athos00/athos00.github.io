@@ -270,7 +270,7 @@ str_detect(txt, "\\w{3}")
 to match a symbol or character class, use double escapes
 :::
 
-## Exercise 1
+## Exercise
 
 ```{r}
 #| label: ex-1
