@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - data/
+    - scripts/
+
+website:
+  title: "A.A.F."
+  navbar:
+    background: "#2774AE" # nice blue
+    left:
+      - href: https://scholar.google.com/citations?user=kogHKY4AAAAJ&hl=en
+        text: publications
+      - teaching.qmd
+      - notes.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

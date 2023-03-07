@@ -1,0 +1,11 @@
+---
+title: "teaching"
+---
+
+
+- [Statistical Computing](https://sta323-sp23.github.io/)
+
+- [Data Analysis and Statistical Inference](https://sta101-fa22.netlify.app/)
+
+- [Intro to Data Science](https://sta199-sp23-1.github.io/)
+

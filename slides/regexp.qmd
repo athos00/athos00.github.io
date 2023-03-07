@@ -1,0 +1,459 @@
+---
+title: "Regular expressions"
+author: "Dr. Alexander Fisher"
+execute:
+  warning: true
+format: 
+    revealjs:
+      smaller: true
+---
+
+# What is a regular expression?
+
+## Definition and utility
+
+A regular expression (aka regex or regexp) is a custom defined string matching pattern. A regular expression lets you:
+
+1.  extract *only* the phone number from this string: "My phone number is (123) 456-7890, not to be confused with my birth month which is 0"
+
+2.  search and replace multiple spellings of the word gray (grey, 6R3Y) in a document simultaneously
+
+3.  search through all files in a directory for the one that contains a specific string
+
+4.  find the specific line number from a file that contains a string
+
+5.  find and replace through multiple files simultaneously
+
+And much, much more!
+
+## Quick example
+
+`grep` and `grepl` are base R functions that return the index of a match and the logical value of a match respectively.
+
+```{r}
+text = c("Wealth, fame, power. Gold Roger, the King of the Pirates, attained",
+         "everything this world has to offer.")
+text
+```
+
+```{r}
+grep("Pirate", text)
+grepl("Pirate", text)
+```
+
+. . .
+
+regular expressions are case-sensitive
+
+```{r}
+grep("pirate", text)
+grepl("pirate", text)
+```
+
+# stringr
+
+![](images/stringr.png){fig-align="center"}
+
+## introducing stringr
+
+```{r}
+#| echo: false
+#| warning: false
+library(tidyverse)
+```
+
+`stringr` hosts a convenient set of tools to manipulate strings and extract regular expressions. All functions begin with the prefix `str`.
+
+The best summary of `stringr` functions is [on this cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/strings.pdf)
+
+Notice below that the string comes first in these functions (in contrast with `grep`)
+
+### Example
+
+```{r}
+txt = c("Luffy: 'I'm going to be king of the pirates! !'", 
+        "The straw hat crew set sail.", 
+        "Nami: 'I'm Going to be the world's greatest navigator!'")
+```
+
+::: panel-tabset
+### str_detect()
+
+-   like `grepl`
+
+```{r}
+str_detect(txt, ":")
+```
+
+### str_extract()
+
+-   return the match
+
+```{r}
+str_extract(txt, "\\s([A-Z]|[a-z])*ng") # first instance
+str_extract_all(txt, "\\s([A-Z]|[a-z])*ng") %>% str()
+```
+
+### str_replace
+
+```{r}
+str_replace(txt, "Nami", "Zoro") %>%
+  str_replace("navigator", "swordsman")
+```
+:::
+
+## The power of `str_replace`
+
+```{r}
+no_bots = "My number is one Two tHree 456 fOuR 3 2 1"
+```
+
+```{r}
+str_to_lower(no_bots) %>%
+  str_replace_all(c("one" = "1", "two" = "2", 
+                    "three" = "3", "four" = "4")) %>%
+  str_extract_all("\\d") %>% # simplify arg here could change pipeline
+  unlist() %>%
+  paste(collapse = "") # or use str_c(collapse = "")
+```
+
+## Basic principles
+
+-   To match a string exactly, just write those characters.
+
+-   To match a single character from a set of possibilities, use square brackets, e.g. `[0123456789]` matches any digit.
+
+-   To group characters together into an expression, use parentheses, `()`
+
+. . .
+
+**Repeaters:** `*` , `+` and `{ }`: the preceding character is to be used for more than once
+
+-   `*` match zero or more occurrences of the preceding expression.
+
+-   `+` match one or more occurrences of the preceding expression.
+
+-   `{}` match the preceding expression for as many times as the value inside this bracket.
+
+. . .
+
+Some repeater examples:\
+\
+
++---------------+-----------------------------------------------------------+
+| regexp        | explanation                                               |
++===============+===========================================================+
+| `a*`          | match 0 or more occurences of "a"                         |
++---------------+-----------------------------------------------------------+
+| `a+`          | match 1 more occurences of "a"                            |
++---------------+-----------------------------------------------------------+
+| `(abc)+`      | match 1 or more back-to-back occurence of the group "abc" |
++---------------+-----------------------------------------------------------+
+| `a{3}`        | match a 3 times                                           |
++---------------+-----------------------------------------------------------+
+| `a{3,}`       | match a 3 or more times                                   |
++---------------+-----------------------------------------------------------+
+| `a{3,5}`      | match "a" 3, 4 or 5 times                                 |
++---------------+-----------------------------------------------------------+
+
+\small{citation: <https://www.geeksforgeeks.org/write-regular-expressions/>}
+
+## Symbols
+
+-   `.` symbol for wildcard. The dot symbol can take place of any other symbol.
+
+-   `?` symbol for optional character. The preceding character may or may not be present in the string to be matched. Example: `docx?` will match both `docx` and `doc`
+
+-   `$` symbol for position match end. Tells the computer that the match must occur at the end of the string or before `\n` at the end of the line or string.
+
+-   `\` symbol for escaping characters. If you want to match for the actual `+` or `.`, etc. add a backslash `\` before that character.
+
+-   `|` symbol for "or". Match any one element separated by the vertical bar `|` character. Example: `th(e|is|at)` will match words "the", "this" and "that".
+
+-   `^` symbol has two meanings.
+
+    -   By itself, `^` sets the position of the match to the beginning of the string or line. Example: `^\d{3}` says to match the first three digits at the beginning of the string and will return `919` from `919-123-4567`.
+
+    -   Together with brackets, `[^set_of_characters]` implies *exclusion*. Example: `[^abc]` will match any character except a, b, c.
+
+## Character classes
+
+**Character classes**: match a character by its class, for example: letter, digit, space, and symbols.
+
+-   `\s` : matches any whitespace characters such as space and tab
+
+-   `\S` : matches any non-whitespace characters
+
+-   `\d` : matches any digit character
+
+-   `\D` : matches any non-digit characters
+
+-   `\w` : matches any word character (basically alpha-numeric)
+
+-   `\W` : matches any non-word character
+
+-   `\b` : matches any word boundary (this would include spaces, dashes, commas, semi-colons, etc)
+
+\small{citation: <https://www.geeksforgeeks.org/write-regular-expressions/>}
+
+## A hierarchical view of character classes
+
+![](images/regex_char_classes.png){fig-align="center" width="479"}
+
+\small{citation: [http://perso.ens-lyon.fr/lise.vaudor/strings-et-expressions-regulieres/]()}
+
+## Ranges
+
+`-` can be used to interpolate between first and last and grab consecutive values. Example: `[A-Z]` matches any capital letters from "A" to "Z". `[1-4]` matches any integer digit from 1 to 4.
+
+To match an alphabetical character (upper or lower case "A-Z" or "a-z") but not numbers, you can use the regular expression `([A-Z]|[a-z])`
+
+To match everything but capital "F" through "N", you can use the regular expression `[^F-N]`
+
+## Escapism
+
+When to escape?
+
+    . ^ $ * + ? { } [ ] \ | ( )
+
+Are all special and perform as described on the previous slides by default. Therefore, these special characters must be escaped to match directly. You need to use *two* levels of escape to escape a special character. Example:
+
+```{r}
+txt = "To be, [or] not to be that is the question."
+```
+
+```{r}
+#| error: true
+str_detect("[", txt)
+```
+
+```{r}
+#| error: true
+str_detect("\[", txt)
+```
+
+```{r}
+grepl("\\[", txt)
+```
+
+## Escape classes
+
+In order to access the presumed functionality of character classes, you need to use a double escape as well. Example:
+
+```{r}
+txt = c("A1", "B2", "CC", "DD", "EE2")
+```
+
+-   Which strings end with a digit?
+
+```{r}
+#| error: true
+str_detect(txt, "\d$")
+```
+
+```{r}
+#| error: true
+str_detect(txt, "\\d$")
+```
+
+-   Which strings contain 3 alphanumeric characters?
+
+```{r}
+str_detect(txt, "\\w{3}")
+```
+
+. . .
+
+::: callout-note
+## tl;dr
+
+to match a symbol or character class, use double escapes
+:::
+
+## Exercise 1
+
+```{r}
+#| label: ex-1
+#| echo: false 
+#| eval: false
+# to make another example in the future
+x = sample(letters, 10000, replace = TRUE) %>% paste(collapse = "") 
+
+x %>%
+  paste0("DataFest{drink_your_ovaltine}") %>% 
+  paste0(x) %>%  
+  write("~/Desktop/secret-message.txt")
+```
+
+Download the files `secret-message.txt` and `emails.txt` using the command below in the console:
+
+::: callout-important
+## WARNING
+
+DO NOT VIEW THE FILE -- YOUR CONTAINER MAY CRASH!
+:::
+
+```{r}
+#| eval: false
+download.file("https://athos00.github.io/data/secret-message.txt", 
+              destfile = "secret-message.txt")
+
+download.file("https://athos00.github.io/data/emails.txt", 
+              destfile = "emails.txt")
+```
+
+*Hint*: read in the file as a string with `read_lines()`
+
+### part 1
+
+In `secret-message.txt`, find the secret message. It will be of the form `DataFest{secret-message}` where `secret-message` is replaced by some other text.
+
+### part 2
+
+In `emails.txt` extract the unique part of the email address (part before the "\@") and count the number of each hosting domain, i.e. count how many emails are `Duke` emails and how many are `gmail`.
+
+## Examples
+
+In the following example we will search through the text and extract matches.
+
+```{r}
+#| eval: false
+#| warning: false
+pirate_phone = "Luffy's phone number is 123 456 7890
+    Zoro doesn't have a phone number
+    Nami's number is 012-345-6789
+    Usopp's number is (919)000 0000
+    Sanji's telephone number is (919) 123 4567
+    0000000000 is Robin's number.
+    Chopper doesn't have a phone number, but his lucky number is 1."
+```
+
+### regex extraction
+
+::: panel-tabset
+### regex
+
+```{r}
+#| eval: false
+str_extract(pirate_phone, "123 456 7890")
+```
+
+### output
+
+`123 456 7890`
+
+### principles
+
+exact match
+:::
+
+::: panel-tabset
+### regex
+
+```{r}
+#| eval: false
+str_extract(pirate_phone, "[0-9]{3}\\-[0-9]{3}\\-[0-9]{4}")
+```
+
+### output
+
+`012-345-6789`
+
+### principles
+
+matching xxx-xxx-xxxx using ranges, repeaters, escaped characters
+:::
+
+## Examples
+
+```{r}
+#| eval: false
+#| warning: false
+pirate_phone = "Luffy's phone number is 123 456 7890
+    Zoro doesn't have a phone number
+    Nami's number is 012-345-6789
+    Usopp's number is (919)000 0000
+    Sanji's telephone number is (919) 123 4567
+    0000000000 is Robin's number.
+    Chopper doesn't have a phone number, but his lucky number is 1."
+```
+
+### regex extraction
+
+::: panel-tabset
+### regex
+
+```{r}
+#| eval: false
+str_extract_all(pirate_phone, "\\(\\d{3}\\)\\d{3}\\s\\d{4}")
+```
+
+### output
+
+`(919)000 0000`
+
+### principles
+
+matching (xxx)xxx xxxx using character classes (`\d` for digit, `\s` for whitespace) and repeaters
+:::
+
+::: panel-tabset
+### regex
+
+```{r}
+#| eval: false
+str_extract_all(pirate_phone, "\\(\\d{3}\\).?\\d{3}\\s[0-9]{4}")
+```
+
+### output
+
+    (919)000 0000
+    (919) 123 4567
+
+### principles
+
+matching (xxx)\*xxx xxxx using character classes, wildcard (`.`) and optional chracter (`?`)
+:::
+
+. . .
+
+::: panel-tabset
+### regex
+
+```{r}
+#| eval: false
+# hidden exercise, code here!
+```
+
+### output
+
+    123 456 7890
+    012-345-6789
+    (919)000 0000
+    (919) 123 4567
+    0000000000
+
+### principles
+
+Multiple optional matching
+:::
+
+## Greedy vs ungreedy matching
+
+What went wrong here?
+
+```{r}
+text = "<div class='main'> <div> <a href='here.pdf'>Here!</a> </div> </div>"
+```
+
+```{r}
+str_extract(text, "<div>.*</div>")
+```
+
+. . .
+
+If you add `?` after a repeater, the matching will be non-greedy (find the shortest possible match, not the longest).
+
+```{r}
+str_extract(text, "<div>.*?</div>")
+```

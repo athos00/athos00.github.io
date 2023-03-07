@@ -1,0 +1,7 @@
+---
+title: "Welcome!"
+---
+
+I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/).
+
+
