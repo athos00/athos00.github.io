@@ -88,7 +88,7 @@
     "href": "slides/regexp.html#escapism",
     "title": "Regular expressions",
     "section": "Escapism",
-    "text": "Escapism\nWhen to escape?\n. ^ $ * + ? { } [ ] \\ | ( )\nAre all special and perform as described on the previous slides by default. Therefore, these special characters must be escaped to match directly. You need to use two levels of escape to escape a special character. Example:\n\ntxt = \"To be, [or] not to be that is the question.\"\n\n\nstr_detect(\"[\", txt)\n\n[1] FALSE\n\n\n\nstr_detect(\"\\[\", txt)\n\nError: '\\[' is an unrecognized escape in character string starting \"\"\\[\"\n\n\n\ngrepl(\"\\\\[\", txt)\n\n[1] TRUE"
+    "text": "Escapism\nWhen to escape?\n. ^ $ * + ? { } [ ] \\ | ( )\nAre all special and perform as described on the previous slides by default. Therefore, these special characters must be escaped to match directly. You need to use two levels of escape to escape a special character. Example:\n\ntxt = \"To be, [or] not to be that is the question.\"\n\n\nstr_detect(txt, \"[\")\n\nError in stri_detect_regex(string, pattern, negate = negate, opts_regex = opts(pattern)): Missing closing bracket on a bracket expression. (U_REGEX_MISSING_CLOSE_BRACKET, context=`[`)\n\n\n\nstr_detect(txt, \"\\[\")\n\nError: '\\[' is an unrecognized escape in character string starting \"\"\\[\"\n\n\n\nstr_detect(txt, \"\\\\[\")\n\n[1] TRUE"
   },
   {
     "objectID": "slides/regexp.html#escape-classes",
