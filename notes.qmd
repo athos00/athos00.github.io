@@ -1,9 +1,0 @@
----
-title: "notes"
----
-
-#### DataFest workshop: *Regular expressions (with stringr!)* 
-
-March 7th, 2023
-
-- [regexp notes](/slides/regexp.html)
