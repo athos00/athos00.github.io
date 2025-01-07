@@ -5,13 +5,43 @@ format:
     toc: true
 ---
 
-![](img/headshot2.jpg){fig-align="left" width="250"}
+::: columns
+::: {.column width="30%"}
+![](img/headshot-circle.png){fig-align="center" width="250"}
+:::
+::: {.column width="3%"}
+:::
+::: {.column width="65%"}
 
+## Welcome to my website!
 I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/).
+:::
+:::
 
-## Research 
 
-How quickly is an infectious pathogen’s epitope mutating? How fast is said pathogen diffusing across a geographic landscape? What factors contribute to, or otherwise augment, transmissibility?
+<!-- ::: columns -->
+
+
+<!-- ::: {.column width="30%"} -->
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+<!-- ![](img/headshot2.jpg){fig-align="left" width="250"} -->
+<!-- ![](img/headshot-circle.png){fig-align="center" width="250"} -->
+
+<!-- I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/). -->
+
+<!-- ::: -->
+
+<!-- ::: -->
+
+<!-- ![](img/headshot2.jpg){fig-align="center" width="250"} -->
+
+<!-- I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/). -->
+
+## Research
+
+How quickly is an infectious pathogen's epitope mutating? How fast is said pathogen diffusing across a geographic landscape? What factors contribute to, or otherwise augment, transmissibility?
 
 My current research focuses on leveraging Bayesian phylogenetics to answer questions like these that lie at the interface of epidemiology, genetics and evolution. Within this framework, one is often interested in estimating thousands of highly correlated parameters that describe complex, hierarchical data generative processes. Typically, the number of parameters grows with the data. To study increasingly massive data sets, including genomic sequence and spatial coordinate data, I build scalable statistical models together with scalable inference machinery and implement my work in the popular open source [Bayesian Evolutionary Analysis Sampling Trees (BEAST) software package](https://beast.community/). Current methodologies of interest include Markov chain Monte Carlo sampling, Bayesian variable selection via shrinkage priors and dynamic programming algorithms.
 
@@ -19,17 +49,87 @@ My current research focuses on leveraging Bayesian phylogenetics to answer quest
 
 ## Teaching
 
-Click an icon below to go to one of my course websites.
+Click an icon or semester below to go to one of my course websites.
 
-[![Data Analysis and Statistical Inference. An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/) 
+<!-- [![Data Analysis and Statistical Inference. An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/)  -->
 
-[![Introduction to data science. An introductory statistics course with a focus on computing.](img/sta199.png)](https://sta199-sp22-003.netlify.app/) 
+<!-- [![Introduction to data science. An introductory statistics course with a focus on computing.](img/sta199.png)](https://sta199-sp22-003.netlify.app/)  -->
 
+<!-- [![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/) -->
+
+::: columns
+::: {.column width="47%"}
+
+[![Bayesian methods and modern statistics An introduction to Bayesian statistical modeling and inference with real world applications.](img/sta360.png){width="212"}](https://sta360-fa24.github.io/)
+
+<p align="center">
+
+[Spring 2025](https://sta360-sp25.github.io), [Fall 2024](https://sta360-fa24.github.io/), [Fall 2023](https://sta360-fa23.github.io/)
+
+</p>
+
+
+
+[![Data Analysis and Statistical Inference. An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/)
+
+<p align="center">
+
+[Fall 2022](https://sta101-fa22.netlify.app/), [Summer 2022](https://sta101.github.io/)
+
+</p>
+
+:::
+
+
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="47%"}
 [![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/)
+
+<p align="center">
+
+[Spring 2023](https://sta323-sp23.github.io/)
+
+</p>
+
+[![Introduction to data science. An introductory statistics course with a focus on computing.](img/sta199.png)](https://sta199-sp22-003.netlify.app/)
+
+<p align="center">
+
+[Spring 2023](https://sta199-sp23-1.github.io/), [Spring 2022](https://sta199-sp22-003.netlify.app/), [Fall 2021]()
+
+</p>
+
+<!-- <p align="center"> -->
+
+<!-- **University of North Carolina**   -->
+
+<!-- Mario Giacomazzo   [mgiacoma@email.unc.edu](mailto:mgiacoma@email.unc.edu) -->
+
+<!-- </p> -->
+:::
+
+<!-- ::: {.column width="2%"} -->
+
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+
+<!-- [![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/) -->
+
+<!-- <p align="center"> -->
+
+<!-- **North Carolina State University**   -->
+
+<!-- Elijah Meyer [esmeyer2@ncsu.edu](mailto:esmeyer2@ncsu.edu) -->
+
+<!-- </p> -->
+
+<!-- ::: -->
+:::
 
 ## Notes
 
-- [DataFest workshop: Regular expressions (with stringr!)](/slides/regexp.html)
-
-
-
+-   [DataFest workshop: Regular expressions (with stringr!)](/slides/regexp.html)

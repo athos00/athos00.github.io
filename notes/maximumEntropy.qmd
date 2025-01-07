@@ -1,0 +1,59 @@
+---
+title: "Maximum entropy"
+author: "Alexander Fisher"
+format:
+  html:
+    toc: true
+---
+
+
+The main subject of this article is: *how can we assign probabilities*? The maximum entropy principle provides a consistent method to assign probabilities from incomplete information.
+
+## Entropy
+
+$$
+S = -\sum_{i = 1}^M p_i \log (p_i/m_i)
+$$ {#eq-entropy1}
+
+or when we consider the limit,
+
+$$
+S = - \int p(x) \log\left[ \frac{p(x)}{m(x)}\right] dx.
+$$ {#eq-entropy2}
+
+The measure $m(x)$ ensures that entropy is invariant under a change of variables $x \rightarrow y = f(x)$, because both $p(x)$ and $m(x)$ transform in the same way.
+
+@eq-entropy1 and @eq-entropy2 are both commonly referred to as **Shannon-Jaynes** entropy.
+
+## Averages
+
+Let $X$ be a continuous random variable. Suppose all we know is that $E X = \mu$.
+
+What pdf $p(x)$ should we assign? According to the principle of maximum entropy, we need the pdf that has the most entropy while satisfying relevant constraints. Here our constraints are
+
+$$
+\begin{aligned}
+\int_{-\infty}^{\infty} p(x)~dx &= 1, \text{ and}\\
+\int_{-\infty}^{\infty} x~p(x)~dx &= \mu.
+\end{aligned}
+$$
+
+To begin, we examine the discrete problem, where objective
+
+$$
+\begin{aligned}
+Q = - \sum_i p_i \log(p_i/m_i) + \lambda_0 \left(\sum_i p_i - 1 \right) + \lambda_1 \left[ 
+\sum_i x_i p_i - \mu
+\right]
+\end{aligned}
+$$
+
+where $\lambda_0$ and $\lambda_1$ are Lagrange multipliers. To maximize, we take the gradient and set it equal to zero.
+
+$$
+\begin{aligned}
+\frac{dQ}{dp_j} &= 0 \implies\\
+p_j &= m_j e^{-(1 + \lambda_0)}e^{-\lambda_1x_j}
+\end{aligned}
+$$
+
