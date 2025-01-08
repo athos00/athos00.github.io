@@ -9,9 +9,9 @@ format:
 ::: {.column width="30%"}
 ![](img/headshot-circle.png){fig-align="center" width="250"}
 :::
-::: {.column width="3%"}
+::: {.column width="6%"}
 :::
-::: {.column width="65%"}
+::: {.column width="60%"}
 
 ## Welcome to my website!
 I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/).
