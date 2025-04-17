@@ -1,9 +1,11 @@
 ---
-title: "Maximum entropy"
+title: "Maximum Entropy"
 author: "Alexander Fisher"
+mainfont: Lato
 format:
   html:
     toc: true
+    css: styles.css
 ---
 
 

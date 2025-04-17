@@ -1,0 +1,195 @@
+---
+title: "Inverse CDF Method"
+author: "Alexander Fisher"
+mainfont: Lato
+format:
+  html:
+    toc: true
+    css: styles.css
+---
+
+```{r}
+#| warning: false
+#| message: false
+#| code-fold: true
+#| code-summary: "See packages used in these notes"
+library(tidyverse)
+```
+
+The subject of this article is: *how can we sample a random variable when we know its cumulative distribution function*? The "inverse CDF method" provides a way to do this when the CDF is invertible.
+
+## Take-away
+
+Let $Y$ be a univariate random variable with CDF function $P_Y(Y)$, and let $U = P_Y(Y)$, then
+
+$$
+U \sim \text{Uniform}(0,1).
+$$ {#eq-unifClaim}
+
+As a result of $U = P_Y(Y)$, 
+
+$$
+Y = P_Y^{-1}(U),
+$$
+when the CDF function is invertible. We can use this fact to sample random variables with arbitrary CDFs, so long as the CDF is invertible.
+
+## Proof
+
+How can we show @eq-unifClaim is true? It's easy to see the support matches: $U \in (0, 1)$. Let's show that the CDF of $U$ is the CDF of a Uniform(0, 1) random variable, in other words let's show that $P_U(u) \equiv Pr(U \leq u) = u$.
+
+$$
+\begin{aligned}
+P_U(u) &= Pr(U \leq u)\\
+&= Pr(P_Y(Y) \leq u)\\
+&= Pr(P_Y^{-1}(P_Y(Y)) \leq P_Y^{-1}(u))\\
+&= Pr(Y \leq P_Y^{-1}(u))\\
+&= P_Y(P_Y^{-1}(u))\\
+&= u
+\end{aligned}
+$$
+Q.E.D.
+
+
+
+## Examples of sampling using the inverse CDF method
+
+
+### Exponential distribution
+
+If $Y \sim \text{exp}(\lambda)$ then 
+
+$$
+P_Y(y) = 1 - \text{exp}\{-\lambda y\}.
+$$
+
+Set $u = P_Y(y)$ and solve for $y$ to obtain $P_Y^{-1}(Y)$:
+
+$$
+y = - \frac{\log(1 - u)}{\lambda}
+$$
+
+:::panel-tabset 
+
+## Sampling 
+```{r}
+set.seed(123)
+U = runif(10000)
+
+# sample from exp(lambda = 1)
+inverseExponentialCDF = function(u, lambda) {
+  - log(1 - u) / lambda
+}
+samples = inverseExponentialCDF(U, lambda = 1)
+```
+
+## Plot
+
+```{r}
+#| echo: false
+#| warning: false
+
+data.frame(samples) %>%
+  ggplot(aes(x = samples)) +
+  geom_histogram(aes(color = "empirical pdf", y = ..density..), alpha = .85, fill = "grey") +
+  stat_function(aes(color = "exact pdf"), 
+                fun = dexp, args = list(rate = 1)) +
+  theme_bw() +
+  labs(title = "Probability density function of Y ~ exp(1)", x = "Y", color = "") +
+  scale_color_manual(values = c("grey", "steelblue"))
+```
+
+## Plot code
+
+```{r}
+#| eval: false
+data.frame(samples) %>%
+  ggplot(aes(x = samples)) +
+  geom_histogram(aes(color = "empirical pdf", y = ..density..),
+                 alpha = .85, fill = "grey") +
+  stat_function(aes(color = "exact pdf"), 
+                fun = dexp, args = list(rate = 1)) +
+  theme_bw() +
+  labs(title = "Probability density function of Y ~ exp(1)",
+       x = "Y", color = "") +
+  scale_color_manual(values = c("grey", "steelblue"))
+```
+
+:::
+
+
+### Gumbel distribution
+
+If $Y \sim \text{Gumbel}(\mu, \beta)$ then 
+
+$$
+P_Y(y) = \exp\{ 
+-\exp \{
+(y - \mu) / \beta
+\}
+\}
+$$
+
+Set $u = P_Y(u)$ and solve for $y$ to obtain $P_Y^{-1}(Y)$:
+
+$$
+y = \beta \log(-\log u) + \mu
+$$
+
+:::panel-tabset 
+
+## Sampling 
+```{r}
+set.seed(123)
+U = runif(10000)
+
+# sample from Gumbel(mu = 1, beta = 2)
+inverseGumbelCDF = function(u, mu, beta) {
+  (beta * log(-log(u))) + mu
+}
+samples = inverseGumbelCDF(U, mu = 1, beta = 2)
+```
+
+## Plot
+
+```{r}
+#| echo: false
+#| warning: false
+
+data.frame(samples) %>%
+  ggplot(aes(x = samples)) +
+  geom_histogram(aes(y = ..density.. ), alpha = .85) +
+  theme_bw() +
+  labs(title = "Empirical density function of Y ~ Gumbel(1, 2)", x = "Y", color = "")
+```
+
+## Plot code
+
+```{r}
+#| eval: false
+data.frame(samples) %>%
+  ggplot(aes(x = samples)) +
+  geom_histogram(aes(y = ..density.. ), alpha = .85) +
+  theme_bw() +
+  labs(title = 
+         "Empirical density function of Y ~ Gumbel(1, 2)",
+       x = "Y", color = "")
+```
+
+:::
+
+## Practice
+
+### Exercise 1
+
+Sample 10000 $Y \sim \text{Laplace}(1, 3)$ using the inverse CDF method.
+
+If $Y \sim \text{Laplace}(\mu, \beta)$ then 
+
+$$
+P_Y(y) = 
+\begin{cases}
+  \frac{1}{2} \exp(\frac{y-\mu}{\beta}) & \text{if }~ y \leq \mu\\
+  1 - \frac{1}{2} \exp(-\frac{y-\mu}{\beta}) & \text{if }~ y\geq \mu
+\end{cases}
+$$
+

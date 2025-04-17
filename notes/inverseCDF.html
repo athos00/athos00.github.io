@@ -8,7 +8,7 @@
 
 <meta name="author" content="Alexander Fisher">
 
-<title>Maximum Entropy</title>
+<title>Inverse CDF Method</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,19 +21,53 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="maximumEntropy_files/libs/clipboard/clipboard.min.js"></script>
-<script src="maximumEntropy_files/libs/quarto-html/quarto.js"></script>
-<script src="maximumEntropy_files/libs/quarto-html/popper.min.js"></script>
-<script src="maximumEntropy_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="maximumEntropy_files/libs/quarto-html/anchor.min.js"></script>
-<link href="maximumEntropy_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="maximumEntropy_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="maximumEntropy_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="maximumEntropy_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="maximumEntropy_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="inverseCDF_files/libs/clipboard/clipboard.min.js"></script>
+<script src="inverseCDF_files/libs/quarto-html/quarto.js"></script>
+<script src="inverseCDF_files/libs/quarto-html/popper.min.js"></script>
+<script src="inverseCDF_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="inverseCDF_files/libs/quarto-html/anchor.min.js"></script>
+<link href="inverseCDF_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="inverseCDF_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="inverseCDF_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="inverseCDF_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="inverseCDF_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -76,8 +110,17 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#entropy" id="toc-entropy" class="nav-link active" data-scroll-target="#entropy">Entropy</a></li>
-  <li><a href="#averages" id="toc-averages" class="nav-link" data-scroll-target="#averages">Averages</a></li>
+  <li><a href="#take-away" id="toc-take-away" class="nav-link active" data-scroll-target="#take-away">Take-away</a></li>
+  <li><a href="#proof" id="toc-proof" class="nav-link" data-scroll-target="#proof">Proof</a></li>
+  <li><a href="#examples-of-sampling-using-the-inverse-cdf-method" id="toc-examples-of-sampling-using-the-inverse-cdf-method" class="nav-link" data-scroll-target="#examples-of-sampling-using-the-inverse-cdf-method">Examples of sampling using the inverse CDF method</a>
+  <ul class="collapse">
+  <li><a href="#exponential-distribution" id="toc-exponential-distribution" class="nav-link" data-scroll-target="#exponential-distribution">Exponential distribution</a></li>
+  <li><a href="#gumbel-distribution" id="toc-gumbel-distribution" class="nav-link" data-scroll-target="#gumbel-distribution">Gumbel distribution</a></li>
+  </ul></li>
+  <li><a href="#practice" id="toc-practice" class="nav-link" data-scroll-target="#practice">Practice</a>
+  <ul class="collapse">
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise 1</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -85,7 +128,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Maximum Entropy</h1>
+<h1 class="title">Inverse CDF Method</h1>
 </div>
 
 
@@ -108,44 +151,162 @@ window.Quarto = {
 </header>
 
 
-<p>The main subject of this article is: <em>how can we assign probabilities</em>? The maximum entropy principle provides a consistent method to assign probabilities from incomplete information.</p>
-<section id="entropy" class="level2">
-<h2 class="anchored" data-anchor-id="entropy">Entropy</h2>
-<p><span id="eq-entropy1"><span class="math display">\[
-S = -\sum_{i = 1}^M p_i \log (p_i/m_i)
+<div class="cell">
+<details class="code-fold">
+<summary>See packages used in these notes</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The subject of this article is: <em>how can we sample a random variable when we know its cumulative distribution function</em>? The “inverse CDF method” provides a way to do this when the CDF is invertible.</p>
+<section id="take-away" class="level2">
+<h2 class="anchored" data-anchor-id="take-away">Take-away</h2>
+<p>Let <span class="math inline">\(Y\)</span> be a univariate random variable with CDF function <span class="math inline">\(P_Y(Y)\)</span>, and let <span class="math inline">\(U = P_Y(Y)\)</span>, then</p>
+<p><span id="eq-unifClaim"><span class="math display">\[
+U \sim \text{Uniform}(0,1).
 \tag{1}\]</span></span></p>
-<p>or when we consider the limit,</p>
-<p><span id="eq-entropy2"><span class="math display">\[
-S = - \int p(x) \log\left[ \frac{p(x)}{m(x)}\right] dx.
-\tag{2}\]</span></span></p>
-<p>The measure <span class="math inline">\(m(x)\)</span> ensures that entropy is invariant under a change of variables <span class="math inline">\(x \rightarrow y = f(x)\)</span>, because both <span class="math inline">\(p(x)\)</span> and <span class="math inline">\(m(x)\)</span> transform in the same way.</p>
-<p><a href="#eq-entropy1" class="quarto-xref">Equation&nbsp;1</a> and <a href="#eq-entropy2" class="quarto-xref">Equation&nbsp;2</a> are both commonly referred to as <strong>Shannon-Jaynes</strong> entropy.</p>
+<p>As a result of <span class="math inline">\(U = P_Y(Y)\)</span>,</p>
+<p><span class="math display">\[
+Y = P_Y^{-1}(U),
+\]</span> when the CDF function is invertible. We can use this fact to sample random variables with arbitrary CDFs, so long as the CDF is invertible.</p>
 </section>
-<section id="averages" class="level2">
-<h2 class="anchored" data-anchor-id="averages">Averages</h2>
-<p>Let <span class="math inline">\(X\)</span> be a continuous random variable. Suppose all we know is that <span class="math inline">\(E X = \mu\)</span>.</p>
-<p>What pdf <span class="math inline">\(p(x)\)</span> should we assign? According to the principle of maximum entropy, we need the pdf that has the most entropy while satisfying relevant constraints. Here our constraints are</p>
+<section id="proof" class="level2">
+<h2 class="anchored" data-anchor-id="proof">Proof</h2>
+<p>How can we show <a href="#eq-unifClaim" class="quarto-xref">Equation&nbsp;1</a> is true? It’s easy to see the support matches: <span class="math inline">\(U \in (0, 1)\)</span>. Let’s show that the CDF of <span class="math inline">\(U\)</span> is the CDF of a Uniform(0, 1) random variable, in other words let’s show that <span class="math inline">\(P_U(u) \equiv Pr(U \leq u) = u\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\int_{-\infty}^{\infty} p(x)~dx &amp;= 1, \text{ and}\\
-\int_{-\infty}^{\infty} x~p(x)~dx &amp;= \mu.
+P_U(u) &amp;= Pr(U \leq u)\\
+&amp;= Pr(P_Y(Y) \leq u)\\
+&amp;= Pr(P_Y^{-1}(P_Y(Y)) \leq P_Y^{-1}(u))\\
+&amp;= Pr(Y \leq P_Y^{-1}(u))\\
+&amp;= P_Y(P_Y^{-1}(u))\\
+&amp;= u
 \end{aligned}
-\]</span></p>
-<p>To begin, we examine the discrete problem, where objective</p>
+\]</span> Q.E.D.</p>
+</section>
+<section id="examples-of-sampling-using-the-inverse-cdf-method" class="level2">
+<h2 class="anchored" data-anchor-id="examples-of-sampling-using-the-inverse-cdf-method">Examples of sampling using the inverse CDF method</h2>
+<section id="exponential-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="exponential-distribution">Exponential distribution</h3>
+<p>If <span class="math inline">\(Y \sim \text{exp}(\lambda)\)</span> then</p>
 <p><span class="math display">\[
-\begin{aligned}
-Q = - \sum_i p_i \log(p_i/m_i) + \lambda_0 \left(\sum_i p_i - 1 \right) + \lambda_1 \left[
-\sum_i x_i p_i - \mu
-\right]
-\end{aligned}
+P_Y(y) = 1 - \text{exp}\{-\lambda y\}.
 \]</span></p>
-<p>where <span class="math inline">\(\lambda_0\)</span> and <span class="math inline">\(\lambda_1\)</span> are Lagrange multipliers. To maximize, we take the gradient and set it equal to zero.</p>
+<p>Set <span class="math inline">\(u = P_Y(y)\)</span> and solve for <span class="math inline">\(y\)</span> to obtain <span class="math inline">\(P_Y^{-1}(Y)\)</span>:</p>
 <p><span class="math display">\[
-\begin{aligned}
-\frac{dQ}{dp_j} &amp;= 0 \implies\\
-p_j &amp;= m_j e^{-(1 + \lambda_0)}e^{-\lambda_1x_j}
-\end{aligned}
+y = - \frac{\log(1 - u)}{\lambda}
 \]</span></p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Sampling</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Plot code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>U <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">10000</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from exp(lambda = 1)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>inverseExponentialCDF <span class="ot">=</span> <span class="cf">function</span>(u, lambda) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> u) <span class="sc">/</span> lambda</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">=</span> <span class="fu">inverseExponentialCDF</span>(U, <span class="at">lambda =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverseCDF_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(samples) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> samples)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"empirical pdf"</span>, <span class="at">y =</span> ..density..),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha =</span> .<span class="dv">85</span>, <span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"exact pdf"</span>), </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">fun =</span> dexp, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">rate =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Probability density function of Y ~ exp(1)"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Y"</span>, <span class="at">color =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>, <span class="st">"steelblue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="gumbel-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="gumbel-distribution">Gumbel distribution</h3>
+<p>If <span class="math inline">\(Y \sim \text{Gumbel}(\mu, \beta)\)</span> then</p>
+<p><span class="math display">\[
+P_Y(y) = \exp\{
+-\exp \{
+(y - \mu) / \beta
+\}
+\}
+\]</span></p>
+<p>Set <span class="math inline">\(u = P_Y(u)\)</span> and solve for <span class="math inline">\(y\)</span> to obtain <span class="math inline">\(P_Y^{-1}(Y)\)</span>:</p>
+<p><span class="math display">\[
+y = \beta \log(-\log u) + \mu
+\]</span></p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Sampling</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Plot code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>U <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">10000</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from Gumbel(mu = 1, beta = 2)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>inverseGumbelCDF <span class="ot">=</span> <span class="cf">function</span>(u, mu, beta) {</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">*</span> <span class="fu">log</span>(<span class="sc">-</span><span class="fu">log</span>(u))) <span class="sc">+</span> mu</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">=</span> <span class="fu">inverseGumbelCDF</span>(U, <span class="at">mu =</span> <span class="dv">1</span>, <span class="at">beta =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverseCDF_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(samples) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> samples)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density.. ), <span class="at">alpha =</span> .<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">"Empirical density function of Y ~ Gumbel(1, 2)"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Y"</span>, <span class="at">color =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="practice" class="level2">
+<h2 class="anchored" data-anchor-id="practice">Practice</h2>
+<section id="exercise-1" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-1">Exercise 1</h3>
+<p>Sample 10000 <span class="math inline">\(Y \sim \text{Laplace}(1, 3)\)</span> using the inverse CDF method.</p>
+<p>If <span class="math inline">\(Y \sim \text{Laplace}(\mu, \beta)\)</span> then</p>
+<p><span class="math display">\[
+P_Y(y) =
+\begin{cases}
+  \frac{1}{2} \exp(\frac{y-\mu}{\beta}) &amp; \text{if }~ y \leq \mu\\
+  1 - \frac{1}{2} \exp(-\frac{y-\mu}{\beta}) &amp; \text{if }~ y\geq \mu
+\end{cases}
+\]</span></p>
+</section>
 </section>
 
 </main>
