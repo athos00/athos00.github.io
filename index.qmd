@@ -5,28 +5,31 @@ format:
     toc: true
 ---
 
-::: columns
+:::::: columns
 ::: {.column width="30%"}
 ![](img/headshot-circle.png){fig-align="center" width="250"}
 :::
+
 ::: {.column width="6%"}
 :::
-::: {.column width="60%"}
 
+::: {.column width="60%"}
 ## Welcome to my website!
+
 I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/).
 :::
-:::
-
+::::::
 
 <!-- ::: columns -->
 
-
 <!-- ::: {.column width="30%"} -->
+
 <!-- ::: -->
 
 <!-- ::: {.column width="30%"} -->
+
 <!-- ![](img/headshot2.jpg){fig-align="left" width="250"} -->
+
 <!-- ![](img/headshot-circle.png){fig-align="center" width="250"} -->
 
 <!-- I'm an assistant professor of the practice in the [Department of Statistical Science](https://stat.duke.edu/) at [Duke University](https://duke.edu/). Prior to joining the faculty at Duke, I completed my PhD in [Biomathematics](https://compmed.ucla.edu/) at University of California, Los Angeles advised by [Marc Suchard](https://suchard-group.github.io/). -->
@@ -45,7 +48,7 @@ How quickly is an infectious pathogen's epitope mutating? How fast is said patho
 
 My current research focuses on leveraging Bayesian phylogenetics to answer questions like these that lie at the interface of epidemiology, genetics and evolution. Within this framework, one is often interested in estimating thousands of highly correlated parameters that describe complex, hierarchical data generative processes. Typically, the number of parameters grows with the data. To study increasingly massive data sets, including genomic sequence and spatial coordinate data, I build scalable statistical models together with scalable inference machinery and implement my work in the popular open source [Bayesian Evolutionary Analysis Sampling Trees (BEAST) software package](https://beast.community/). Current methodologies of interest include Markov chain Monte Carlo sampling, Bayesian variable selection via shrinkage priors and dynamic programming algorithms.
 
-[Click here](https://scholar.google.com/citations?user=kogHKY4AAAAJ&hl=en) to see a list of publications.
+[Click here](https://scholar.google.com/citations?user=Kn_ZhocAAAAJ&hl=en&oi=ao) to see a list of publications.
 
 ## Teaching
 
@@ -57,9 +60,8 @@ Click an icon or semester below to go to one of my course websites.
 
 <!-- [![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/) -->
 
-::: columns
+:::::: columns
 ::: {.column width="47%"}
-
 [![Bayesian methods and modern statistics An introduction to Bayesian statistical modeling and inference with real world applications.](img/sta360.png){width="212"}](https://sta360-fa24.github.io/)
 
 <p align="center">
@@ -68,8 +70,6 @@ Click an icon or semester below to go to one of my course websites.
 
 </p>
 
-
-
 [![Data Analysis and Statistical Inference. An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/)
 
 <p align="center">
@@ -77,10 +77,7 @@ Click an icon or semester below to go to one of my course websites.
 [Fall 2022](https://sta101-fa22.netlify.app/), [Summer 2022](https://sta101.github.io/)
 
 </p>
-
 :::
-
-
 
 ::: {.column width="4%"}
 :::
@@ -128,8 +125,27 @@ Click an icon or semester below to go to one of my course websites.
 <!-- </p> -->
 
 <!-- ::: -->
+::::::
+
+## Data competitions
+
+:::::: columns
+::: {.column width="45%"}
+[ASA DataFest at Duke](https://dukestatsci.github.io/datafest/)
+
+[![](images/clipboard-46992755.png)](https://dukestatsci.github.io/datafest/)
 :::
 
-## Notes
+::: {.column width="5%"}
+:::
+
+::: {.column width="45%"}
+[Triangle Sports Analytics Competition](https://triangle-sports.github.io/)
+
+![](images/clipboard-1697523157.png){width="2048"}
+:::
+::::::
+
+## Miscellaneous notes
 
 -   [DataFest workshop: Regular expressions (with stringr!)](/slides/regexp.html)
