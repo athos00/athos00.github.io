@@ -62,7 +62,7 @@ Click an icon or semester below to go to one of my course websites.
 
 :::::: columns
 ::: {.column width="47%"}
-[![Bayesian methods and modern statistics An introduction to Bayesian statistical modeling and inference with real world applications.](img/sta360.png){width="212"}](https://sta360-fa24.github.io/)
+[![**Bayesian Methods and Modern Statistics** An introduction to Bayesian statistical modeling and inference with real world applications.](img/sta360.png){width="212"}](https://sta360-fa24.github.io/)
 
 <p align="center">
 
@@ -70,7 +70,7 @@ Click an icon or semester below to go to one of my course websites.
 
 </p>
 
-[![Data Analysis and Statistical Inference. An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/)
+[![**Data Analysis and Statistical Inference** An introductory course with an emphasis on statistical reasoning.](img/sta101.png){width="212"}](https://sta101-fa22.netlify.app/)
 
 <p align="center">
 
@@ -83,7 +83,7 @@ Click an icon or semester below to go to one of my course websites.
 :::
 
 ::: {.column width="47%"}
-[![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/)
+[![**Statistical Computing** An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/)
 
 <p align="center">
 
@@ -91,40 +91,14 @@ Click an icon or semester below to go to one of my course websites.
 
 </p>
 
-[![Introduction to data science. An introductory statistics course with a focus on computing.](img/sta199.png)](https://sta199-sp22-003.netlify.app/)
+[![**Introduction to Data Science** An introductory statistics course with a focus on computing.](img/sta199.png)](https://sta199-sp22-003.netlify.app/)
 
 <p align="center">
 
 [Spring 2023](https://sta199-sp23-1.github.io/), [Spring 2022](https://sta199-sp22-003.netlify.app/), [Fall 2021]()
 
 </p>
-
-<!-- <p align="center"> -->
-
-<!-- **University of North Carolina**   -->
-
-<!-- Mario Giacomazzo   [mgiacoma@email.unc.edu](mailto:mgiacoma@email.unc.edu) -->
-
-<!-- </p> -->
 :::
-
-<!-- ::: {.column width="2%"} -->
-
-<!-- ::: -->
-
-<!-- ::: {.column width="30%"} -->
-
-<!-- [![Statistical computing. An R-intensive course with a focus on algorithms, modeling and optimization.](img/sta323.png){width="212"}](https://sta323-sp23.github.io/) -->
-
-<!-- <p align="center"> -->
-
-<!-- **North Carolina State University**   -->
-
-<!-- Elijah Meyer [esmeyer2@ncsu.edu](mailto:esmeyer2@ncsu.edu) -->
-
-<!-- </p> -->
-
-<!-- ::: -->
 ::::::
 
 ## Data competitions

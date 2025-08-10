@@ -1,0 +1,398 @@
+---
+title: "Reproducible pedagogy with R and Quarto"
+institute: "useR! 2025 @ Duke"
+author: "Alexander Fisher"
+footer: "[🔗 athos00.github.io](https://athos00.github.io)"
+# logo: "images/logo.png"
+format:
+  revealjs:
+    theme: slides.scss
+    transition: none
+    slide-number: "c"
+    chalkboard: false
+    history: false
+    smaller: true
+editor: visual
+execute:
+  freeze: auto
+  echo: true
+  warning: true
+---
+
+# Why reproducible?![](images/clipboard-924352760.gif){width="800"}
+
+::: {.notes}
+- we all know the importance in research
+- why bother in teaching? Two audiences: other instructors, students
+- the best ideas are iterated upon
+- role model effect
+:::
+
+## These slides & notes
+
+:::::: columns
+:::: {.column width="50%"}
+::: columns
+-   <https://duke.is/user>
+:::
+::::
+
+::: {.column width="50%"}
+![](images/clipboard-1947196613.png){width="250"}
+:::
+::::::
+
+::: {.notes}
+- on that note...
+- at the link you will also find a tutorial to do the things I show you in this talk
+:::
+
+. . . 
+
+:::::: columns
+:::: {.column width="50%"}
+::: columns
+### Outline
+
+- Quarto tools
+- R packages
+- Throughout: Bayesian course examples
+:::
+::::
+
+::: {.column width="50%"}
+:::
+::::::
+
+# Quarto tools
+
+## Code folding and `panel-tabset`
+
+```{r}
+#| label: cf-example
+#| code-fold: true
+#| code-summary: "show libraries"
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(latex2exp)
+library(glue)
+library(patchwork)
+```
+
+::: panel-tabset
+## Plot
+```{r}
+#| label: plot-ptset
+#| echo: false
+
+set.seed(3)
+flips = rbinom(5000, size = 1, prob = 0.25)
+
+N = c(0, 1, 2, 3, 4, 10, 100, 1000, 5000)
+
+for (i in seq_along(N)) {
+n = N[i]
+if(n == 0) {
+  y = 0
+}
+else {
+  y = sum(flips[1:n])
+}
+
+x = 0:1 # range
+df = data.frame(x)
+assign(paste0("p", i),
+  df %>%
+  ggplot(aes(x = x)) +
+  stat_function(fun=dbeta, 
+                args = list(shape1 = y + 1, shape2 = n - y + 1)) +
+  labs(y = TeX("$p(\\theta | y)$"), x = TeX("$\\theta$"),
+       title = glue("n = {n}")) +
+  theme_bw()
+)
+}
+
+(p1 + p2 + p3) / 
+  (p4 + p5 + p6) / 
+  (p7 + p8 + p9) +
+  plot_annotation(title = "Evolving posterior of heads probability with a biased coin")
+```
+
+## Code
+
+```{r}
+#| label: code-ptset
+#| eval: false
+set.seed(3)
+flips = rbinom(5000, size = 1, prob = 0.25)
+
+N = c(0, 1, 2, 3, 4, 10, 100, 1000, 5000)
+
+for (i in seq_along(N)) {
+n = N[i]
+if(n == 0) {
+  y = 0
+}
+else {
+  y = sum(flips[1:n])
+}
+
+x = 0:1 # range
+df = data.frame(x)
+assign(paste0("p", i),
+  df %>%
+  ggplot(aes(x = x)) +
+  stat_function(fun=dbeta, 
+                args = list(shape1 = y + 1, shape2 = n - y + 1)) +
+  labs(y = TeX("$p(\\theta | y)$"), x = TeX("$\\theta$"),
+       title = glue("n = {n}")) +
+  theme_bw()
+)
+}
+
+(p1 + p2 + p3) / 
+  (p4 + p5 + p6) / 
+  (p7 + p8 + p9) +
+  plot_annotation(title = "Evolving posterior of heads probability with a biased coin")
+```
+:::
+
+::: {.notes}
+- by making the code used to create my notes available to students, they can refer to it in the future (be it on a hw assignment, research project, or future job)
+:::
+
+
+## Callout chunks
+
+::: callout-note
+## Definition
+A prior $p(\theta)$ is said to be **conjugate** to the data generative model $p(y|\theta)$ if the family of the posterior is necessarily in the same family as the prior. In math,  $p(\theta)$ is conjugate to $p(y|\theta)$ if
+
+$$
+p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
+$$
+:::
+
+. . . 
+
+::: callout-important
+MCMC is not a model!
+:::
+
+<!-- ## Pandoc output formats -->
+
+<!-- - Render slides as notes too! -->
+
+# Quarto websites
+
+## Website tips
+
+`File` > `New Project` > `Quarto Website`
+
+. . .
+
+::: panel-tabset
+## Data set page
+
+- [https://sta360-sp25.github.io/data](https://sta360-sp25.github.io/data)
+
+In `_quarto.yml` file, at the top:
+
+```
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - data
+```
+
+## Downloadable R scripts
+
+[Automatic schedule maker](athos00.github.io/scripts/auto_schedule.R)
+
+Example schedule [here](https://sta360-sp25.github.io/)
+
+## pandoc 
+
+Website syllabus has downloadable pdf: [https://sta360-sp25.github.io/syllabus.html](https://sta360-sp25.github.io/syllabus.html)
+
+YAML:
+
+``` markdown
+---
+title: "STA 360: Bayesian methods and modern statistics"
+subtitle: "Spring 2025"
+# mainfont: Lato
+format:
+  html:
+    page-layout: full
+  pdf: default
+---
+```
+
+
+
+:::
+
+::: {.notes}
+- pandoc lets you output simultaneously to pdf for easy printing
+:::
+
+# R packages
+
+## Pop quizzes with `countdown`
+
+To receive credit for this assignment, write your full name at the top of your paper.
+
+### Exercise 1
+
+Write "posterior" or "prior" in the blank below:
+
+$\int p(\tilde{y}|\theta) p(\theta | y_1,\ldots y_n)d\theta$ is a ___ predictive distribution.
+
+### Exercise 2
+
+Expand $p(\theta | y)$ using Bayes' rule (include the normalization constant).
+
+### Exercise 3
+
+The vertical line on the following plot is best described as the posterior ____. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 2
+library(tidyverse) 
+library(latex2exp)
+data.frame(x = 0:6) %>%
+  ggplot(aes(x = x)) +
+  stat_function(fun = dgamma, args = list(2, 2)) +
+  theme_bw() +
+  geom_vline(xintercept = 1/2, col = "red") +
+  labs(x = TeX("$\\theta$"), 
+       y = TeX("$p(\\theta | y_1,\\ldots y_n)$")) +
+  theme(text = element_text(size = 15))
+```
+
+
+```{r}
+#| echo: false
+library(countdown)
+countdown(minutes = 3, font_size = "2em",
+          color_running_background = "#2774AE")
+```
+
+## Quiz Testimonials
+
+::: {.notes}
+- how many of you think students like pop quizzes?
+:::
+
+. . . 
+
+"I also liked the low-stake pop quizzes that encouraged constant review of the material"
+
+. . . 
+
+"I thought the random quizzes helped me stay engaged in class"
+
+. . . 
+
+"The pop quizzes were a good way of forcing us to keep up with material"
+
+. . . 
+
+"I liked the pop quizzes" 
+
+. . . 
+
+"The in-class quiz section was also good to go over the punch line of last lecture" 
+
+. . . 
+
+"The in-class quizzes were good for making sure I remained on top of the content"
+
+. . . 
+
+"I think the quizzes were helpful to keep up to date with the notes"
+
+. . . 
+
+"I think the pop quizzes were a good way to make sure we understood the content"
+
+## `animate` package
+
+![Sampling from the posterior in Bayesian
+regression](https://sta360-sp25.github.io/notes/imgs/hyperplane-search.gif){width="600"}
+
+## Example lesson
+
+[https://sta360-sp25.github.io/](https://sta360-sp25.github.io/)
+
+# Tutorial notes
+
+## Code folding (how to)
+
+```` markdown
+``` {.r}
+#| code-fold: true
+#| code-summary: "load packages"
+library(tidyverse)
+```
+
+````
+
+- Further reading: [https://quarto.org/docs/output-formats/html-code.html](https://quarto.org/docs/output-formats/html-code.html)
+
+## `panel-tabset` (how to)
+
+```` markdown
+::: {.panel-tabset}
+## Plot
+``` {.r}
+#| echo: false
+#| message: false
+plot(cars)
+```
+## Code
+``` {.r}
+#| eval: false
+plot(cars)
+```
+:::
+````
+
+- Further reading: [https://quarto.org/docs/interactive/layout.html](https://quarto.org/docs/interactive/layout.html)
+
+## Callout chunks (how to)
+
+```` markdown
+::: callout-note
+## Definition
+
+Text here
+:::
+
+````
+
+- Further reading: [https://quarto.org/docs/authoring/callouts.html](https://quarto.org/docs/authoring/callouts.html)
+
+## Countdown (how to)
+
+```` markdown
+``` {.r}
+#| echo: false
+library(countdown)
+countdown(minutes = 3, font_size = "2em",
+          color_running_background = "#2774AE")
+```
+````
+
+- Further reading: [https://pkg.garrickadenbuie.com/countdown/#1](https://pkg.garrickadenbuie.com/countdown/#1)
+
+# Thank you!
+
+
