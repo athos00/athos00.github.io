@@ -330,7 +330,13 @@ regression](https://sta360-sp25.github.io/notes/imgs/hyperplane-search.gif){widt
 
 ## Example lesson
 
-[https://sta360-sp25.github.io/](https://sta360-sp25.github.io/)
+- [https://sta360-sp25.github.io/](https://sta360-sp25.github.io/)
+
+. . .
+
+- Source code for course website: [https://github.com/sta360-sp25/sta360-sp25.github.io](https://github.com/sta360-sp25/sta360-sp25.github.io)
+
+
 
 # Tutorial notes
 
