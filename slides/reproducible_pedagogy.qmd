@@ -210,7 +210,7 @@ project:
 
 ## Downloadable R scripts
 
-[Automatic schedule maker](athos00.github.io/scripts/auto_schedule.R)
+[Automatic schedule maker](https://athos00.github.io/scripts/auto_schedule.R)
 
 Example schedule [here](https://sta360-sp25.github.io/)
 
