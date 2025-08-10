@@ -19,13 +19,13 @@ execute:
   warning: true
 ---
 
-# Why reproducible?![](images/clipboard-924352760.gif){width="800"}
+# Why reproducible?![](images/researchers2.png){width="500"}
 
 ::: {.notes}
 - we all know the importance in research
-- why bother in teaching? Two audiences: other instructors, students
-- the best ideas are iterated upon
+- why bother in teaching? Two audiences: other students, instructors
 - role model effect
+- the best ideas are iterated upon
 :::
 
 ## These slides & notes
