@@ -33,7 +33,7 @@ execute:
 :::::: columns
 :::: {.column width="50%"}
 ::: columns
--   <https://duke.is/user>
+-   <https://duke.is/fisher-user>
 :::
 ::::
 
