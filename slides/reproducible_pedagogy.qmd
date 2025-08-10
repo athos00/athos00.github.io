@@ -38,7 +38,7 @@ execute:
 ::::
 
 ::: {.column width="50%"}
-![](images/clipboard-1947196613.png){width="250"}
+![](images/user_link.png){width="250"}
 :::
 ::::::
 
