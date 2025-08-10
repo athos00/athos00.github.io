@@ -21,11 +21,11 @@ execute:
 
 # Why reproducible?![](images/researchers2.png){width="500"}
 
-::: {.notes}
-- we all know the importance in research
-- why bother in teaching? Two audiences: other students, instructors
-- role model effect
-- the best ideas are iterated upon
+::: notes
+-   we all know the importance in research
+-   why bother in teaching? Two audiences: other students, instructors
+-   role model effect
+-   the best ideas are iterated upon
 :::
 
 ## These slides & notes
@@ -42,21 +42,21 @@ execute:
 :::
 ::::::
 
-::: {.notes}
-- on that note...
-- at the link you will also find a tutorial to do the things I show you in this talk
+::: notes
+-   on that note...
+-   at the link you will also find a tutorial to do the things I show you in this talk
 :::
 
-. . . 
+. . .
 
 :::::: columns
 :::: {.column width="50%"}
 ::: columns
 ### Outline
 
-- Quarto tools
-- R packages
-- Throughout: Bayesian course examples
+-   Quarto tools
+-   R packages
+-   Throughout: Bayesian course examples
 :::
 ::::
 
@@ -83,6 +83,7 @@ library(patchwork)
 
 ::: panel-tabset
 ## Plot
+
 ```{r}
 #| label: plot-ptset
 #| echo: false
@@ -159,23 +160,23 @@ assign(paste0("p", i),
 ```
 :::
 
-::: {.notes}
-- by making the code used to create my notes available to students, they can refer to it in the future (be it on a hw assignment, research project, or future job)
+::: notes
+-   by making the code used to create my notes available to students, they can refer to it in the future (be it on a hw assignment, research project, or future job)
 :::
-
 
 ## Callout chunks
 
 ::: callout-note
 ## Definition
-A prior $p(\theta)$ is said to be **conjugate** to the data generative model $p(y|\theta)$ if the family of the posterior is necessarily in the same family as the prior. In math,  $p(\theta)$ is conjugate to $p(y|\theta)$ if
+
+A prior $p(\theta)$ is said to be **conjugate** to the data generative model $p(y|\theta)$ if the family of the posterior is necessarily in the same family as the prior. In math, $p(\theta)$ is conjugate to $p(y|\theta)$ if
 
 $$
 p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
 $$
 :::
 
-. . . 
+. . .
 
 ::: callout-important
 MCMC is not a model!
@@ -189,24 +190,46 @@ MCMC is not a model!
 
 ## Website tips
 
-`File` > `New Project` > `Quarto Website`
+`File` \> `New Project` \> `Quarto Website`
 
 . . .
 
-::: panel-tabset
+:::::: panel-tabset
 ## Data set page
 
-- [https://sta360-sp25.github.io/data](https://sta360-sp25.github.io/data)
+::::: columns
+::: {.column width="50%"}
+-   <https://sta360-sp25.github.io/data>
 
 In `_quarto.yml` file, at the top:
 
-```
+```         
 project:
   type: website
   output-dir: docs
   resources:
     - data
 ```
+:::
+
+::: {.column width="50%"}
+In a blank quarto file within the project directory, add the following YAML:
+
+```         
+---
+title: "STA 360: Data sets"
+subtitle: "Fall 2024"
+listing:
+  contents:
+    - "/data/*"
+  sort:
+    - "title desc"
+format:
+  html: default
+---
+```
+:::
+:::::
 
 ## Downloadable R scripts
 
@@ -214,9 +237,9 @@ project:
 
 Example schedule [here](https://sta360-sp25.github.io/)
 
-## pandoc 
+## pandoc
 
-Website syllabus has downloadable pdf: [https://sta360-sp25.github.io/syllabus.html](https://sta360-sp25.github.io/syllabus.html)
+Website syllabus has downloadable pdf: <https://sta360-sp25.github.io/syllabus.html>
 
 YAML:
 
@@ -231,13 +254,10 @@ format:
   pdf: default
 ---
 ```
+::::::
 
-
-
-:::
-
-::: {.notes}
-- pandoc lets you output simultaneously to pdf for easy printing
+::: notes
+-   pandoc lets you output simultaneously to pdf for easy printing
 :::
 
 # R packages
@@ -250,7 +270,7 @@ To receive credit for this assignment, write your full name at the top of your p
 
 Write "posterior" or "prior" in the blank below:
 
-$\int p(\tilde{y}|\theta) p(\theta | y_1,\ldots y_n)d\theta$ is a ___ predictive distribution.
+$\int p(\tilde{y}|\theta) p(\theta | y_1,\ldots y_n)d\theta$ is a \_\_\_ predictive distribution.
 
 ### Exercise 2
 
@@ -258,7 +278,7 @@ Expand $p(\theta | y)$ using Bayes' rule (include the normalization constant).
 
 ### Exercise 3
 
-The vertical line on the following plot is best described as the posterior ____. 
+The vertical line on the following plot is best described as the posterior \_\_\_\_.
 
 ```{r}
 #| echo: false
@@ -277,7 +297,6 @@ data.frame(x = 0:6) %>%
   theme(text = element_text(size = 15))
 ```
 
-
 ```{r}
 #| echo: false
 library(countdown)
@@ -287,56 +306,53 @@ countdown(minutes = 3, font_size = "2em",
 
 ## Quiz Testimonials
 
-::: {.notes}
-- how many of you think students like pop quizzes?
+::: notes
+-   how many of you think students like pop quizzes?
 :::
 
-. . . 
+. . .
 
 "I also liked the low-stake pop quizzes that encouraged constant review of the material"
 
-. . . 
+. . .
 
 "I thought the random quizzes helped me stay engaged in class"
 
-. . . 
+. . .
 
 "The pop quizzes were a good way of forcing us to keep up with material"
 
-. . . 
+. . .
 
-"I liked the pop quizzes" 
+"I liked the pop quizzes"
 
-. . . 
+. . .
 
-"The in-class quiz section was also good to go over the punch line of last lecture" 
+"The in-class quiz section was also good to go over the punch line of last lecture"
 
-. . . 
+. . .
 
 "The in-class quizzes were good for making sure I remained on top of the content"
 
-. . . 
+. . .
 
 "I think the quizzes were helpful to keep up to date with the notes"
 
-. . . 
+. . .
 
 "I think the pop quizzes were a good way to make sure we understood the content"
 
 ## `animate` package
 
-![Sampling from the posterior in Bayesian
-regression](https://sta360-sp25.github.io/notes/imgs/hyperplane-search.gif){width="600"}
+![Sampling from the posterior in Bayesian regression](https://sta360-sp25.github.io/notes/imgs/hyperplane-search.gif){width="600"}
 
 ## Example lesson
 
-- [https://sta360-sp25.github.io/](https://sta360-sp25.github.io/)
+-   <https://sta360-sp25.github.io/>
 
 . . .
 
-- Source code for course website: [https://github.com/sta360-sp25/sta360-sp25.github.io](https://github.com/sta360-sp25/sta360-sp25.github.io)
-
-
+-   Source code for course website: <https://github.com/sta360-sp25/sta360-sp25.github.io>
 
 # Tutorial notes
 
@@ -348,10 +364,9 @@ regression](https://sta360-sp25.github.io/notes/imgs/hyperplane-search.gif){widt
 #| code-summary: "load packages"
 library(tidyverse)
 ```
-
 ````
 
-- Further reading: [https://quarto.org/docs/output-formats/html-code.html](https://quarto.org/docs/output-formats/html-code.html)
+-   Further reading: <https://quarto.org/docs/output-formats/html-code.html>
 
 ## `panel-tabset` (how to)
 
@@ -371,20 +386,19 @@ plot(cars)
 :::
 ````
 
-- Further reading: [https://quarto.org/docs/interactive/layout.html](https://quarto.org/docs/interactive/layout.html)
+-   Further reading: <https://quarto.org/docs/interactive/layout.html>
 
 ## Callout chunks (how to)
 
-```` markdown
+``` markdown
 ::: callout-note
 ## Definition
 
 Text here
 :::
+```
 
-````
-
-- Further reading: [https://quarto.org/docs/authoring/callouts.html](https://quarto.org/docs/authoring/callouts.html)
+-   Further reading: <https://quarto.org/docs/authoring/callouts.html>
 
 ## Countdown (how to)
 
@@ -397,8 +411,6 @@ countdown(minutes = 3, font_size = "2em",
 ```
 ````
 
-- Further reading: [https://pkg.garrickadenbuie.com/countdown/#1](https://pkg.garrickadenbuie.com/countdown/#1)
+-   Further reading: <https://pkg.garrickadenbuie.com/countdown/#1>
 
 # Thank you!
-
-

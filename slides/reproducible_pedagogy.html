@@ -406,8 +406,10 @@ p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Data set page</a></li><li><a href="#tabset-2-2">Downloadable R scripts</a></li><li><a href="#tabset-2-3">pandoc</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1">
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
-<li><a href="https://sta360-sp25.github.io/data">https://sta360-sp25.github.io/data</a></li>
+<li><a href="https://sta360-sp25.github.io/data" class="uri">https://sta360-sp25.github.io/data</a></li>
 </ul>
 <p>In <code>_quarto.yml</code> file, at the top:</p>
 <pre><code>project:
@@ -415,23 +417,37 @@ p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
   output-dir: docs
   resources:
     - data</code></pre>
+</div><div class="column" style="width:50%;">
+<p>In a blank quarto file within the project directory, add the following YAML:</p>
+<pre><code>---
+title: "STA 360: Data sets"
+subtitle: "Fall 2024"
+listing:
+  contents:
+    - "/data/*"
+  sort:
+    - "title desc"
+format:
+  html: default
+---</code></pre>
+</div></div>
 </div>
 <div id="tabset-2-2">
 <p><a href="https://athos00.github.io/scripts/auto_schedule.R">Automatic schedule maker</a></p>
 <p>Example schedule <a href="https://sta360-sp25.github.io/">here</a></p>
 </div>
 <div id="tabset-2-3">
-<p>Website syllabus has downloadable pdf: <a href="https://sta360-sp25.github.io/syllabus.html">https://sta360-sp25.github.io/syllabus.html</a></p>
+<p>Website syllabus has downloadable pdf: <a href="https://sta360-sp25.github.io/syllabus.html" class="uri">https://sta360-sp25.github.io/syllabus.html</a></p>
 <p>YAML:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href=""></a><span class="co">---</span></span>
-<span id="cb4-2"><a href=""></a><span class="an">title:</span><span class="co"> "STA 360: Bayesian methods and modern statistics"</span></span>
-<span id="cb4-3"><a href=""></a><span class="an">subtitle:</span><span class="co"> "Spring 2025"</span></span>
-<span id="cb4-4"><a href=""></a><span class="co"># mainfont: Lato</span></span>
-<span id="cb4-5"><a href=""></a><span class="an">format:</span></span>
-<span id="cb4-6"><a href=""></a><span class="co">  html:</span></span>
-<span id="cb4-7"><a href=""></a><span class="co">    page-layout: full</span></span>
-<span id="cb4-8"><a href=""></a><span class="co">  pdf: default</span></span>
-<span id="cb4-9"><a href=""></a><span class="co">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href=""></a><span class="co">---</span></span>
+<span id="cb5-2"><a href=""></a><span class="an">title:</span><span class="co"> "STA 360: Bayesian methods and modern statistics"</span></span>
+<span id="cb5-3"><a href=""></a><span class="an">subtitle:</span><span class="co"> "Spring 2025"</span></span>
+<span id="cb5-4"><a href=""></a><span class="co"># mainfont: Lato</span></span>
+<span id="cb5-5"><a href=""></a><span class="an">format:</span></span>
+<span id="cb5-6"><a href=""></a><span class="co">  html:</span></span>
+<span id="cb5-7"><a href=""></a><span class="co">    page-layout: full</span></span>
+<span id="cb5-8"><a href=""></a><span class="co">  pdf: default</span></span>
+<span id="cb5-9"><a href=""></a><span class="co">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -470,7 +486,7 @@ p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
 
 <img data-src="reproducible_pedagogy_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"><div class="cell">
 <div class="cell-output-display">
-<div class="countdown" id="timer_1290c02d" data-update-every="1" tabindex="0" style="right:0;bottom:0;font-size:2em;">
+<div class="countdown" id="timer_c9627d60" data-update-every="1" tabindex="0" style="right:0;bottom:0;font-size:2em;">
 <div class="countdown-controls"><button class="countdown-bump-down">−</button><button class="countdown-bump-up">+</button></div>
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
@@ -526,11 +542,11 @@ p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
 <section id="example-lesson" class="slide level2">
 <h2>Example lesson</h2>
 <ul>
-<li><a href="https://sta360-sp25.github.io/">https://sta360-sp25.github.io/</a></li>
+<li><a href="https://sta360-sp25.github.io/" class="uri">https://sta360-sp25.github.io/</a></li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Source code for course website: <a href="https://github.com/sta360-sp25/sta360-sp25.github.io">https://github.com/sta360-sp25/sta360-sp25.github.io</a></li>
+<li>Source code for course website: <a href="https://github.com/sta360-sp25/sta360-sp25.github.io" class="uri">https://github.com/sta360-sp25/sta360-sp25.github.io</a></li>
 </ul>
 </div>
 </section></section>
@@ -541,55 +557,55 @@ p(\theta) \in \mathcal{P} \implies p(\theta | y) \in \mathcal{P}
 </section>
 <section id="code-folding-how-to" class="slide level2">
 <h2>Code folding (how to)</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href=""></a><span class="in">``` {.r}</span></span>
-<span id="cb5-2"><a href=""></a><span class="in">#| code-fold: true</span></span>
-<span id="cb5-3"><a href=""></a><span class="in">#| code-summary: "load packages"</span></span>
-<span id="cb5-4"><a href=""></a><span class="in">library(tidyverse)</span></span>
-<span id="cb5-5"><a href=""></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href=""></a><span class="in">``` {.r}</span></span>
+<span id="cb6-2"><a href=""></a><span class="in">#| code-fold: true</span></span>
+<span id="cb6-3"><a href=""></a><span class="in">#| code-summary: "load packages"</span></span>
+<span id="cb6-4"><a href=""></a><span class="in">library(tidyverse)</span></span>
+<span id="cb6-5"><a href=""></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Further reading: <a href="https://quarto.org/docs/output-formats/html-code.html">https://quarto.org/docs/output-formats/html-code.html</a></li>
+<li>Further reading: <a href="https://quarto.org/docs/output-formats/html-code.html" class="uri">https://quarto.org/docs/output-formats/html-code.html</a></li>
 </ul>
 </section>
 <section id="panel-tabset-how-to" class="slide level2">
 <h2><code>panel-tabset</code> (how to)</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href=""></a>::: {.panel-tabset}</span>
-<span id="cb6-2"><a href=""></a><span class="fu">## Plot</span></span>
-<span id="cb6-3"><a href=""></a><span class="in">``` {.r}</span></span>
-<span id="cb6-4"><a href=""></a><span class="in">#| echo: false</span></span>
-<span id="cb6-5"><a href=""></a><span class="in">#| message: false</span></span>
-<span id="cb6-6"><a href=""></a><span class="in">plot(cars)</span></span>
-<span id="cb6-7"><a href=""></a><span class="in">```</span></span>
-<span id="cb6-8"><a href=""></a><span class="fu">## Code</span></span>
-<span id="cb6-9"><a href=""></a><span class="in">``` {.r}</span></span>
-<span id="cb6-10"><a href=""></a><span class="in">#| eval: false</span></span>
-<span id="cb6-11"><a href=""></a><span class="in">plot(cars)</span></span>
-<span id="cb6-12"><a href=""></a><span class="in">```</span></span>
-<span id="cb6-13"><a href=""></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href=""></a>::: {.panel-tabset}</span>
+<span id="cb7-2"><a href=""></a><span class="fu">## Plot</span></span>
+<span id="cb7-3"><a href=""></a><span class="in">``` {.r}</span></span>
+<span id="cb7-4"><a href=""></a><span class="in">#| echo: false</span></span>
+<span id="cb7-5"><a href=""></a><span class="in">#| message: false</span></span>
+<span id="cb7-6"><a href=""></a><span class="in">plot(cars)</span></span>
+<span id="cb7-7"><a href=""></a><span class="in">```</span></span>
+<span id="cb7-8"><a href=""></a><span class="fu">## Code</span></span>
+<span id="cb7-9"><a href=""></a><span class="in">``` {.r}</span></span>
+<span id="cb7-10"><a href=""></a><span class="in">#| eval: false</span></span>
+<span id="cb7-11"><a href=""></a><span class="in">plot(cars)</span></span>
+<span id="cb7-12"><a href=""></a><span class="in">```</span></span>
+<span id="cb7-13"><a href=""></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Further reading: <a href="https://quarto.org/docs/interactive/layout.html">https://quarto.org/docs/interactive/layout.html</a></li>
+<li>Further reading: <a href="https://quarto.org/docs/interactive/layout.html" class="uri">https://quarto.org/docs/interactive/layout.html</a></li>
 </ul>
 </section>
 <section id="callout-chunks-how-to" class="slide level2">
 <h2>Callout chunks (how to)</h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href=""></a>::: callout-note</span>
-<span id="cb7-2"><a href=""></a><span class="fu">## Definition</span></span>
-<span id="cb7-3"><a href=""></a></span>
-<span id="cb7-4"><a href=""></a>Text here</span>
-<span id="cb7-5"><a href=""></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href=""></a>::: callout-note</span>
+<span id="cb8-2"><a href=""></a><span class="fu">## Definition</span></span>
+<span id="cb8-3"><a href=""></a></span>
+<span id="cb8-4"><a href=""></a>Text here</span>
+<span id="cb8-5"><a href=""></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Further reading: <a href="https://quarto.org/docs/authoring/callouts.html">https://quarto.org/docs/authoring/callouts.html</a></li>
+<li>Further reading: <a href="https://quarto.org/docs/authoring/callouts.html" class="uri">https://quarto.org/docs/authoring/callouts.html</a></li>
 </ul>
 </section>
 <section id="countdown-how-to" class="slide level2">
 <h2>Countdown (how to)</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href=""></a><span class="in">``` {.r}</span></span>
-<span id="cb8-2"><a href=""></a><span class="in">#| echo: false</span></span>
-<span id="cb8-3"><a href=""></a><span class="in">library(countdown)</span></span>
-<span id="cb8-4"><a href=""></a><span class="in">countdown(minutes = 3, font_size = "2em",</span></span>
-<span id="cb8-5"><a href=""></a><span class="in">          color_running_background = "#2774AE")</span></span>
-<span id="cb8-6"><a href=""></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href=""></a><span class="in">``` {.r}</span></span>
+<span id="cb9-2"><a href=""></a><span class="in">#| echo: false</span></span>
+<span id="cb9-3"><a href=""></a><span class="in">library(countdown)</span></span>
+<span id="cb9-4"><a href=""></a><span class="in">countdown(minutes = 3, font_size = "2em",</span></span>
+<span id="cb9-5"><a href=""></a><span class="in">          color_running_background = "#2774AE")</span></span>
+<span id="cb9-6"><a href=""></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Further reading: <a href="https://pkg.garrickadenbuie.com/countdown/#1">https://pkg.garrickadenbuie.com/countdown/#1</a></li>
+<li>Further reading: <a href="https://pkg.garrickadenbuie.com/countdown/#1" class="uri">https://pkg.garrickadenbuie.com/countdown/#1</a></li>
 </ul>
 </section></section>
 <section id="thank-you" class="title-slide slide level1 center">
