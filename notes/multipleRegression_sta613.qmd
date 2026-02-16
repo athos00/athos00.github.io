@@ -1,0 +1,454 @@
+---
+title: "Multiple regression"
+subtitle: "STA613"
+author: "Alexander Fisher"
+format: html
+bibliography: multipleRegressionBib.bib
+toc: true
+---
+
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\hby}{\hat{\boldsymbol{y}}}
+\newcommand{\bone}{\boldsymbol{1}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\be}{\boldsymbol{\varepsilon}}
+\newcommand{\hbe}{\hat{\be}}
+\newcommand{\bzero}{\boldsymbol{0}}
+\newcommand{\identity}{\boldsymbol{I}}
+
+```{r}
+#| include: false
+
+# data_path <- normalizePath(file.path(dirname(knitr::current_input()), "..", "data_s"))
+# 
+# knitr::opts_knit$set(root.dir = data_path)
+```
+
+
+::: callout-note
+## Follow along
+Access data and scripts here: [https://duke.is/sta613-fisher](https://duke.box.com/s/6c56uvvngncd6pr080xoelm6sfdgjimu)
+:::
+
+## Libraries
+
+In these notes, we use the following libraries: 
+
+```{r}
+#| warning: false
+#| message: false
+library(tidyverse)
+library(mgcv)
+```
+
+## Data: metabolic assays
+
+Data come from @fisher2018mitochondrial. Major goal: bridge the gap between molecular signatures and functional mitochondrial bioenergetics by directly measuring mitochondrial energy flux.
+
+- Skeletal muscle mitochondria are isolated from either the NT or
+  Tg mice and the same pool of mitochondrial suspension is used for
+  JO2, dPsi, Redox, and e-1 Leak measures.
+- Each of the 6 substrates (GM, PM, PMPc, PMOc, PcM and OcM)
+  assesses the performance of various metabolic pathways.
+- You can think of each assay as a type of "dose-response" curve
+  where varying the $\Delta$G$_{\mathrm{ATP}}$ (-12.95 through 14.49)
+  is like a dose.
+- `JO2` measures Flux of Oxygen; indicator of how much "work"
+    the mitochondria are capable of performing under a given fuel
+    condition and energy charge.
+
+### Load data
+
+
+```{r}
+#| warning: false
+#| message: false
+o2 <- read_csv("../data_s/o2.csv")
+o2$dose <- factor(o2$dose, levels = c(-13.65, -13.95, -14.19, -14.36, -14.49))
+o2$pair <- as.character(o2$pair)
+```
+### Exploratory data analysis
+
+Take a look at the data: 
+
+```{r}
+glimpse(o2)
+```
+
+Marginal summaries:
+
+::: panel-tabset
+## Substrate 
+
+```{r}
+table(o2$substrate, useNA = "always")
+```
+
+
+## Subject
+
+```{r}
+table(o2$subject, useNA = "always")
+```
+
+
+## Dose
+
+```{r}
+table(o2$dose, useNA = "always")
+```
+
+
+## Genotype
+
+```{r}
+table(o2$geno, o2$pair, useNA = "always")
+```
+
+:::
+
+#### Exploring response variable
+
+```{r}
+summary(o2$y)
+par(mfrow = c(1, 2), las = 1)
+hist(o2$y, nclass = 20)
+qqnorm(o2$y)
+abline(a = mean(o2$y),
+       b = sd(o2$y),
+       col = 2)
+```
+
+
+## Linear modeling
+
+
+### The simple regression model and notation
+
+$$
+y = \beta_0 + \beta_1 x + \epsilon
+$$
+
+- $y$: the **outcome** variable. Also called the "response" or "dependent variable". In prediction problems, this is what we are interested in predicting.
+
+- $x$: the **predictor**. Also commonly referred to as "regressor", "independent variable", "covariate", "feature", "the data".
+
+- $\beta_0$, $\beta_1$ are called "constants" or **coefficients**. They are fixed numbers. These are **population parameters**. $\beta_0$ has another special name, "the intercept".
+
+- $\epsilon$: the **error**. This quantity represents observational error, i.e. the difference between our observation and the true population-level expected value: $\beta_0 + \beta_1 x$.
+
+Effectively this model says our data $y$ is linearly related to $x$ but is not perfectly observed due to some error.
+
+### Writing simple regression in matrix form
+
+
+$$
+\by = \bX \beta + \be,
+$$
+
+where 
+
+- $\by \in \mathbb{R}^n$
+- $\bX \in \mathbb{R}^{n \times p}$
+- $\beta \in \mathbb{R}^p$
+- $\be \in \mathbb{R}^n$
+
+and $p = 2$, i.e. there's an intercept and 1 slope. More explicitly: 
+
+$$
+\mathbf{y} = \mathbf{X}\beta + \boldsymbol{\varepsilon},
+$$
+
+$$
+\begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & x_1 \\
+1 & x_2 \\
+\vdots & \vdots \\
+1 & x_n
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0 \\
+\beta_1
+\end{bmatrix}
++
+\begin{bmatrix}
+\varepsilon_1 \\
+\varepsilon_2 \\
+\vdots \\
+\varepsilon_n
+\end{bmatrix}.
+$$
+
+
+
+::: callout-note 
+## Definition: design matrix
+$\bX$ is called the "design matrix", "covariate matrix", "model matrix" or even sometimes the "data matrix". It includes columns for each of the predictors and an intercept (if applicable).
+:::
+
+### Key assumptions
+
+1. Linearity of $Y$ and $X$ (linearity applies to coefficients, $\beta$).
+2. Variation $\sigma^2$ in error term is independent of $\bX$.
+3. Error terms are mutually independent
+4. Error terms are normally distributed.
+
+These assumptions may be summarized: 
+
+$$
+\by \sim N(\bX \beta, \sigma^2 \identity)
+$$
+
+::: callout-note 
+##  Definition: multiple regression 
+
+If $p > 2$, we have more than one "predictor" variable and this is called **multiple regression**. 
+:::
+
+### Picture of simple vs multiple regression (offline)
+
+
+## Linear modeling in R
+
+Syntax:
+
+- `lm` stands for "linear model"
+- if variables `y` and `x` are objects in your environment, and you wish to fit the model $y = \beta_0 + \beta_1 x_1$, you can run directly:
+
+```{r}
+#| eval: false
+lm(y ~ x) # regresses  y on x
+```
+
+- if `y` and `x` are columns in data frame `df`, then you must reference the data:
+
+```{r}
+#| eval: false
+lm(y ~ x, data = df)
+```
+
+- to run multiple regression, $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \epsilon$, add in additional predictors with `+`: 
+
+```{r}
+#| eval: false
+lm(y ~ x1 + x2 + x3, data = df)
+```
+
+- to include an interaction effect, $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon$
+
+```{r}
+#| eval: false
+lm(y ~ x1 * x2, data = df)
+```
+
+- to drop the intercept term, e.g. the model is $y = \beta_1 x_1 + \epsilon$, you have a couple options, each is equivalent:
+```{r}
+#| eval: false
+lm(y ~ 0 + x1)
+lm(y ~ -1 + x1)
+```
+
+- to look at the design matrix, you can run 
+
+```{r} 
+#| eval: false
+model.matrix(lm(y ~ x1 + x2))
+```
+
+::: callout-important
+## Exercise
+Simulate some data, e.g.
+```{r}
+#| eval: TRUE
+set.seed(613)
+N <- 20
+y <- rnorm(N)
+x1 <- rnorm(N)
+x2 <- runif(N)
+```
+
+and try out some of the functions above.
+::: 
+
+You can examine the output of your fitted model: 
+
+```{r}
+#| eval: false
+model1 <- lm(y ~ x1 + x2)
+summary(model1)
+broom::glance(model1)
+```
+
+
+## Fitted model output
+
+- The `Estimate` output of `summary()` shows the least squares estimator $\hat{\beta}$ of $\beta$.
+- `Std Error` is SE($\hat{\beta}$)
+-  `t value` is the t-statistic for $H_0: \beta = 0$ vs alternative $H_A: \beta \neq 0$
+- `Pr(> |t|)` is the p-value for this test.
+- The function `glance` from the `broom` package,  `broom::glance()` outputs additional summaries, including `sigma`, which  shows the least squares estimator $\hat{\sigma}^2$ of $\sigma^2$
+
+Mathematically, 
+
+$$
+\begin{aligned}
+\hat{\beta} &= (\bX^T \bX)^{-1} \bX ^t \by\\
+\hat{\sigma}^2 &= MSE = \frac{\sum_{i=1}^n (y_i - \hat{y}_i)^2}{n-p}\\
+\hat{y}_i &= E[y_i | x_i, \hat{\beta}, \hat{\sigma}^2] = \hat{\beta}x_i ~~~(\text{predicted outcome})\\
+e_i &= y_i - \hat{y}_i ~~~(\text{residual})
+\end{aligned}
+$$
+
+:::callout-note
+- Remember: $p$ is the number of columns in the model matrix, including the intercept if present.
+- We say $\hat{\sigma}^2$ has $n-p$ degrees of freedom (df).
+:::
+
+:::callout-important
+## Exercise
+Check the formulas above in R. Hint: `t(X)` is the transpose of a matrix "X". `%*%` multiples matrices in R. `solve()` inverts them.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Click to view solution"
+X <-  model.matrix(lm(y ~ x1 + x2))
+betaHat <- solve(t(X) %*% X) %*% t(X) %*% y
+betaHat
+n <- nrow(X)
+p <- ncol(X)
+yHat <- X %*% betaHat 
+s2 <- t(y - yHat) %*% (y - yHat) / (n-p)
+sqrt(s2)
+```
+
+:::
+
+## Return to Metabolic Assay Data
+
+### Linear model without batch (pair) effects
+
+- genotype (g)
+- dose category (d): level of $\Delta G_{ATP}$
+- substrate (s) and
+- pair (p)
+
+Together, these uniquely identify samples.
+
+Model:
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \beta_{d,s} + \delta_{d,s} I_{geno='TG'} + \epsilon_{p,d,s,g}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+Components of $\delta$ are offsets measuring the differential effect of the transgenic (relative to the WT or non-Tg) genotype.
+
+
+::: panel-tabset
+## Model
+```{r}
+## Linear regression model without batch effect
+lm.out0<-lm(y ~ -1 + dose:substrate + isTg:dose:substrate,data=o2)
+```
+
+
+## Summary (short)
+
+```{r}
+head(summary(lm.out0)$coefficients)
+```
+
+## Summary (long)
+
+```{r}
+summary(lm.out0)
+```
+
+
+:::
+
+#### Diagnostic plots related to batch (checking the IID errors assumption)
+
+```{r}
+# Graph residuals by batch for model 0
+par(mfrow=c(1,2),las=1) # Plot the graphs in a 1 by 2 format
+boxplot(residuals(lm.out0)~o2$pair,main="Resids Model 0 by Batch")
+abline(h=0,lty=2)
+boxplot(residuals(lm.out0)~o2$subject,main="Resids Model 0 by Subject")
+abline(h=0,lty=2)
+```
+
+### Linear model with batch (pair) effects
+
+Here, the model is: 
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \beta_{d,s} + \delta_{d,s} I_{geno='Tg'} + \gamma_p + \epsilon_{p,d,s,g}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+
+As above, 
+
+- the components of $\delta$ are offsets measuring the differential effect of the transgenic (relative to the non-Tg) genotype.
+- *New*: components of $\gamma$ are the pair-specific batch effects.
+
+::: panel-tabset
+## Model
+
+```{r}
+lm.out1<-lm(y ~ -1 + dose:substrate + isTg:dose:substrate + pair, data=o2)
+```
+
+## Summary (long)
+
+```{r}
+summary(lm.out1)
+```
+
+:::
+
+#### Diagnostic plots: model with batch adjustment 
+
+```{r}
+par(mfrow=c(1,2),las=1) # Plot the graphs in a 1 by 2 format
+boxplot(residuals(lm.out1)~o2$pair,main="Resids Model 1 by Batch")
+abline(h=0,lty=2)
+boxplot(residuals(lm.out1)~o2$subject,main="Resids Model 1 by Subject")
+abline(h=0,lty=2)
+```
+
+#### Other residual diagnostic plots 
+
+```{r}
+par(mfrow=c(1,2),las=1)
+r<-residuals(lm.out1)
+boxplot(r~o2$substrate,main="Resids Model 1 by Substrate")
+abline(h=0,lty=2)
+boxplot(r~o2$geno,main="Resids Model 1 by Genotype")
+abline(h=0,lty=2)
+```
+```{r}
+par(mfrow=c(1,2),las=1)
+boxplot(r~o2$dose,main="Resids Model 1 by Dose")
+abline(h=0,lty=2)
+qqnorm(r,main="Model 1 Residuals")
+abline(a=0,b=sd(r),lty=2)
+```
+
+## Testing
+
+## Dose as continuous covariate
+
+
+## References 
