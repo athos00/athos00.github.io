@@ -448,7 +448,174 @@ abline(a=0,b=sd(r),lty=2)
 
 ## Testing
 
+### Key quantities:
+
+- Total sum of squares (TSS): $\sum_{i=1}^n (y_i - \bar{y})^2$
+- Residual sum of squares (RSS): $\sum_{i=1}^n (y_i - \hat{y}_i)^2$
+- Regression sum of squares ($SS_{reg}$): TSS - RSS; TSS = $SS_{reg}$ + RSS
+- Mean squared error (MSE): $\frac{RSS}{n - p}$
+- Here $p$ is the number of columns in the design matrix including the column of 1s for the intercept (if present).
+
+### F-test for the comparison of nested models
+
+- Test for the regression 
+  - "Null" model includes only an intercept
+  - "Full" model adds to this $p-1$ covariates: 
+  
+  $$
+  F = \frac{SS_{reg}/p}{MSE}
+  $$
+  This has an F-distribution with $(p, n-p)$ degrees of freedom.
+  
+- For pair of nested models
+  - "Null" model includes a subset of the covariates included in the "full" model: 
+  
+  $$
+  F = \frac{(SS_{reg,F} - SS_{reg,N}) / q}{MSE_{F}}
+  $$
+  - This has an F-distribution with $(q, n-p)$ degrees of freedom, where $q$ is the difference in the number of predictors between the two models.
+  
+  
+### Example: F-test for the genotype effect
+
+- Null model: 
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \beta_{d,s} + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+
+- "Alternate" model: 
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \beta_{d,s} + \delta_{d,s} I_{geno='Tg'} + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+
+In the null model the offsets measuring the differential effect of the transgenic genotype are set to zero.
+
+```{r}
+lm.null<-lm(y ~ -1 + dose:substrate + pair,data=o2)
+anova(lm.null,lm.out1)
+```
+
+Large F-statistics yields a small p-value, which implies evidence against the null. Genotype appears to be an important predictor.
+
 ## Dose as continuous covariate
+
+Model for continuous dose: 
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \alpha_s + \beta_{s}d + \delta_sI_{geno = 'Tg'} + \mu_s I_{geno='Tg'}d + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+  
+
+::: panel-tabset
+
+## Model
+```{r}
+o2$doseX<-as.numeric(as.character(o2$dose))
+## Linear regression model with batch effect
+lm.out3<-lm(y ~ 
+              -1 + substrate + doseX:substrate +
+              isTg:substrate + isTg:doseX:substrate + pair,data=o2)
+```
+## Summary
+
+```{r}
+summary(lm.out3)
+```
+
+
+## Diagnostics
+
+```{r}
+par(mfrow = c(1, 2), las = 1)
+r <- residuals(lm.out3)
+boxplot(r ~ o2$substrate, main = "Resids Model 3 by Substrate")
+abline(h = 0, lty = 2)
+boxplot(r ~ o2$geno, main = "Resids Model 3 by Genotype")
+abline(h = 0, lty = 2)
+```
+
+```{r}
+par(mfrow = c(1, 2), las = 1)
+boxplot(r ~ o2$dose, main = "Resids Model 3 by Dose")
+abline(h = 0, lty = 2)
+qqnorm(r, main = "Model 3 Residuals")
+abline(a = 0, b = sd(r), lty = 2)
+```
+:::
+
+### Curvilinear dose
+
+$$
+\begin{aligned}
+y_{p,d,s,g} &= \alpha_s + \beta_{s}\text{poly}(d,2) + \delta_sI_{geno = 'Tg'} + \mu_s I_{geno='Tg'}\text{poly}(d,2) + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &\sim N(0, \sigma^2)
+\end{aligned}
+$$
+
+- What is `poly(d, 2)`?
+
+::: panel-tabset
+
+## Model
+
+```{r}
+lm.out4<-lm(y ~ 
+              -1 + substrate + poly(doseX,2):substrate + 
+              isTg:substrate + isTg:poly(doseX,2):substrate + pair,data=o2)
+```
+
+## Summary
+
+```{r}
+summary(lm.out4)
+```
+
+
+## Diagnostics
+
+```{r}
+par(mfrow=c(1,2),las=1)
+r<-residuals(lm.out4)
+boxplot(r~o2$substrate,main="Resids Model 4 by Substrate")
+abline(h=0,lty=2)
+boxplot(r~o2$geno,main="Resids Model 4 by Genotype")
+abline(h=0,lty=2)
+```
+
+```{r}
+par(mfrow=c(1,2),las=1)
+boxplot(r~o2$dose,main="Resids Model 4 by Dose")
+abline(h=0,lty=2)
+qqnorm(r,main="Model 4 Residuals")
+abline(a=0,b=sd(r),lty=2)
+```
+
+
+## F-test
+- Test for added value of quadratic term
+
+```{r}
+anova(lm.out3,lm.out4)
+```
+
+:::
+
+Other questions / issues
+
+- Are the dose by substrate interaction terms needed?
+- What about subject effects? Subject and genotype are confounded.
+- Anything else?
 
 
 ## References 

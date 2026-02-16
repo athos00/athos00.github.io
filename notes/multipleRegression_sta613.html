@@ -151,8 +151,16 @@ window.Quarto = {
   <li><a href="#linear-model-without-batch-pair-effects" id="toc-linear-model-without-batch-pair-effects" class="nav-link" data-scroll-target="#linear-model-without-batch-pair-effects">Linear model without batch (pair) effects</a></li>
   <li><a href="#linear-model-with-batch-pair-effects" id="toc-linear-model-with-batch-pair-effects" class="nav-link" data-scroll-target="#linear-model-with-batch-pair-effects">Linear model with batch (pair) effects</a></li>
   </ul></li>
-  <li><a href="#testing" id="toc-testing" class="nav-link" data-scroll-target="#testing">Testing</a></li>
-  <li><a href="#dose-as-continuous-covariate" id="toc-dose-as-continuous-covariate" class="nav-link" data-scroll-target="#dose-as-continuous-covariate">Dose as continuous covariate</a></li>
+  <li><a href="#testing" id="toc-testing" class="nav-link" data-scroll-target="#testing">Testing</a>
+  <ul class="collapse">
+  <li><a href="#key-quantities" id="toc-key-quantities" class="nav-link" data-scroll-target="#key-quantities">Key quantities:</a></li>
+  <li><a href="#f-test-for-the-comparison-of-nested-models" id="toc-f-test-for-the-comparison-of-nested-models" class="nav-link" data-scroll-target="#f-test-for-the-comparison-of-nested-models">F-test for the comparison of nested models</a></li>
+  <li><a href="#example-f-test-for-the-genotype-effect" id="toc-example-f-test-for-the-genotype-effect" class="nav-link" data-scroll-target="#example-f-test-for-the-genotype-effect">Example: F-test for the genotype effect</a></li>
+  </ul></li>
+  <li><a href="#dose-as-continuous-covariate" id="toc-dose-as-continuous-covariate" class="nav-link" data-scroll-target="#dose-as-continuous-covariate">Dose as continuous covariate</a>
+  <ul class="collapse">
+  <li><a href="#curvilinear-dose" id="toc-curvilinear-dose" class="nav-link" data-scroll-target="#curvilinear-dose">Curvilinear dose</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -869,9 +877,332 @@ F-statistic: 983.5 on 65 and 275 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="testing" class="level2">
 <h2 class="anchored" data-anchor-id="testing">Testing</h2>
+<section id="key-quantities" class="level3">
+<h3 class="anchored" data-anchor-id="key-quantities">Key quantities:</h3>
+<ul>
+<li>Total sum of squares (TSS): <span class="math inline">\(\sum_{i=1}^n (y_i - \bar{y})^2\)</span></li>
+<li>Residual sum of squares (RSS): <span class="math inline">\(\sum_{i=1}^n (y_i - \hat{y}_i)^2\)</span></li>
+<li>Regression sum of squares (<span class="math inline">\(SS_{reg}\)</span>): TSS - RSS; TSS = <span class="math inline">\(SS_{reg}\)</span> + RSS</li>
+<li>Mean squared error (MSE): <span class="math inline">\(\frac{RSS}{n - p}\)</span></li>
+<li>Here <span class="math inline">\(p\)</span> is the number of columns in the design matrix including the column of 1s for the intercept (if present).</li>
+</ul>
+</section>
+<section id="f-test-for-the-comparison-of-nested-models" class="level3">
+<h3 class="anchored" data-anchor-id="f-test-for-the-comparison-of-nested-models">F-test for the comparison of nested models</h3>
+<ul>
+<li><p>Test for the regression</p>
+<ul>
+<li>“Null” model includes only an intercept</li>
+<li>“Full” model adds to this <span class="math inline">\(p-1\)</span> covariates:</li>
+</ul>
+<p><span class="math display">\[
+F = \frac{SS_{reg}/p}{MSE}
+\]</span> This has an F-distribution with <span class="math inline">\((p, n-p)\)</span> degrees of freedom.</p></li>
+<li><p>For pair of nested models</p>
+<ul>
+<li>“Null” model includes a subset of the covariates included in the “full” model:</li>
+</ul>
+<p><span class="math display">\[
+F = \frac{(SS_{reg,F} - SS_{reg,N}) / q}{MSE_{F}}
+\]</span></p>
+<ul>
+<li>This has an F-distribution with <span class="math inline">\((q, n-p)\)</span> degrees of freedom, where <span class="math inline">\(q\)</span> is the difference in the number of predictors between the two models.</li>
+</ul></li>
+</ul>
+</section>
+<section id="example-f-test-for-the-genotype-effect" class="level3">
+<h3 class="anchored" data-anchor-id="example-f-test-for-the-genotype-effect">Example: F-test for the genotype effect</h3>
+<ul>
+<li>Null model:</li>
+</ul>
+<p><span class="math display">\[
+\begin{aligned}
+y_{p,d,s,g} &amp;= \beta_{d,s} + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &amp;\sim N(0, \sigma^2)
+\end{aligned}
+\]</span></p>
+<ul>
+<li>“Alternate” model:</li>
+</ul>
+<p><span class="math display">\[
+\begin{aligned}
+y_{p,d,s,g} &amp;= \beta_{d,s} + \delta_{d,s} I_{geno='Tg'} + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &amp;\sim N(0, \sigma^2)
+\end{aligned}
+\]</span></p>
+<p>In the null model the offsets measuring the differential effect of the transgenic genotype are set to zero.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>lm.null<span class="ot">&lt;-</span><span class="fu">lm</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> dose<span class="sc">:</span>substrate <span class="sc">+</span> pair,<span class="at">data=</span>o2)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.null,lm.out1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: y ~ -1 + dose:substrate + pair
+Model 2: y ~ -1 + dose:substrate + isTg:dose:substrate + pair
+  Res.Df       RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    305 239993485                                  
+2    275  74153877 30 165839608 20.501 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Large F-statistics yields a small p-value, which implies evidence against the null. Genotype appears to be an important predictor.</p>
+</section>
 </section>
 <section id="dose-as-continuous-covariate" class="level2">
 <h2 class="anchored" data-anchor-id="dose-as-continuous-covariate">Dose as continuous covariate</h2>
+<p>Model for continuous dose:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_{p,d,s,g} &amp;= \alpha_s + \beta_{s}d + \delta_sI_{geno = 'Tg'} + \mu_s I_{geno='Tg'}d + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &amp;\sim N(0, \sigma^2)
+\end{aligned}
+\]</span></p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Model</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Summary</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Diagnostics</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>o2<span class="sc">$</span>doseX<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">as.character</span>(o2<span class="sc">$</span>dose))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear regression model with batch effect</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>lm.out3<span class="ot">&lt;-</span><span class="fu">lm</span>(y <span class="sc">~</span> </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>              <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> substrate <span class="sc">+</span> doseX<span class="sc">:</span>substrate <span class="sc">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>              isTg<span class="sc">:</span>substrate <span class="sc">+</span> isTg<span class="sc">:</span>doseX<span class="sc">:</span>substrate <span class="sc">+</span> pair,<span class="at">data=</span>o2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.out3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ -1 + substrate + doseX:substrate + isTg:substrate + 
+    isTg:doseX:substrate + pair, data = o2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1735.04  -367.76    14.55   361.94  1756.76 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+substrateGM              143296.1     4891.8  29.293  &lt; 2e-16 ***
+substrateOcM              33788.5     5358.6   6.305 9.84e-10 ***
+substratePcM              30018.8     5358.6   5.602 4.67e-08 ***
+substratePM              141953.7     4891.8  29.019  &lt; 2e-16 ***
+substratePMOc            135269.5     4891.8  27.652  &lt; 2e-16 ***
+substratePMPc             88945.2     4891.8  18.182  &lt; 2e-16 ***
+pair2                       287.8      103.7   2.775  0.00586 ** 
+pair3                       534.3      103.7   5.152 4.59e-07 ***
+pair4                       463.8      103.7   4.472 1.09e-05 ***
+pair5                       144.7      103.7   1.395  0.16401    
+pair6                     -1536.8      118.3 -12.996  &lt; 2e-16 ***
+substrateGM:doseX          9596.5      346.1  27.724  &lt; 2e-16 ***
+substrateOcM:doseX         2110.8      379.2   5.567 5.61e-08 ***
+substratePcM:doseX         1859.4      379.2   4.904 1.52e-06 ***
+substratePM:doseX          9622.6      346.1  27.800  &lt; 2e-16 ***
+substratePMOc:doseX        9064.0      346.1  26.186  &lt; 2e-16 ***
+substratePMPc:doseX        5889.9      346.1  17.016  &lt; 2e-16 ***
+substrateGM:isTg          22297.3     6917.4   3.223  0.00140 ** 
+substrateOcM:isTg          4729.9     7577.7   0.624  0.53296    
+substratePcM:isTg         12083.5     7577.7   1.595  0.11181    
+substratePM:isTg          10674.0     6917.4   1.543  0.12383    
+substratePMOc:isTg        30206.4     6917.4   4.367 1.72e-05 ***
+substratePMPc:isTg        49273.5     6917.4   7.123 7.37e-12 ***
+substrateGM:doseX:isTg     1513.6      489.5   3.092  0.00217 ** 
+substrateOcM:doseX:isTg     235.5      536.2   0.439  0.66086    
+substratePcM:doseX:isTg     729.2      536.2   1.360  0.17486    
+substratePM:doseX:isTg      723.3      489.5   1.478  0.14052    
+substratePMOc:doseX:isTg   2064.3      489.5   4.217 3.25e-05 ***
+substratePMPc:doseX:isTg   3367.6      489.5   6.880 3.31e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 568.1 on 311 degrees of freedom
+Multiple R-squared:  0.9942,    Adjusted R-squared:  0.9937 
+F-statistic:  1839 on 29 and 311 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">las =</span> <span class="dv">1</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">residuals</span>(lm.out3)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r <span class="sc">~</span> o2<span class="sc">$</span>substrate, <span class="at">main =</span> <span class="st">"Resids Model 3 by Substrate"</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r <span class="sc">~</span> o2<span class="sc">$</span>geno, <span class="at">main =</span> <span class="st">"Resids Model 3 by Genotype"</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="multipleRegression_sta613_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">las =</span> <span class="dv">1</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r <span class="sc">~</span> o2<span class="sc">$</span>dose, <span class="at">main =</span> <span class="st">"Resids Model 3 by Dose"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(r, <span class="at">main =</span> <span class="st">"Model 3 Residuals"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="fu">sd</span>(r), <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="multipleRegression_sta613_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="curvilinear-dose" class="level3">
+<h3 class="anchored" data-anchor-id="curvilinear-dose">Curvilinear dose</h3>
+<p><span class="math display">\[
+\begin{aligned}
+y_{p,d,s,g} &amp;= \alpha_s + \beta_{s}\text{poly}(d,2) + \delta_sI_{geno = 'Tg'} + \mu_s I_{geno='Tg'}\text{poly}(d,2) + \gamma_p + \epsilon_{p, d, g, s}\\
+\epsilon_{p,d,s,g} &amp;\sim N(0, \sigma^2)
+\end{aligned}
+\]</span></p>
+<ul>
+<li>What is <code>poly(d, 2)</code>?</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Model</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Summary</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Diagnostics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-4" role="tab" aria-controls="tabset-5-4" aria-selected="false" href="">F-test</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>lm.out4<span class="ot">&lt;-</span><span class="fu">lm</span>(y <span class="sc">~</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>              <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> substrate <span class="sc">+</span> <span class="fu">poly</span>(doseX,<span class="dv">2</span>)<span class="sc">:</span>substrate <span class="sc">+</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>              isTg<span class="sc">:</span>substrate <span class="sc">+</span> isTg<span class="sc">:</span><span class="fu">poly</span>(doseX,<span class="dv">2</span>)<span class="sc">:</span>substrate <span class="sc">+</span> pair,<span class="at">data=</span>o2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.out4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ -1 + substrate + poly(doseX, 2):substrate + 
+    isTg:substrate + isTg:poly(doseX, 2):substrate + pair, data = o2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1717.94  -308.34    22.71   330.26  1499.14 
+
+Coefficients:
+                                   Estimate Std. Error t value Pr(&gt;|t|)    
+substrateGM                         7717.13     108.95  70.830  &lt; 2e-16 ***
+substrateOcM                        3967.66     115.45  34.367  &lt; 2e-16 ***
+substratePcM                        3749.73     115.45  32.480  &lt; 2e-16 ***
+substratePM                         6006.13     108.95  55.126  &lt; 2e-16 ***
+substratePMOc                       7213.17     108.95  66.205  &lt; 2e-16 ***
+substratePMPc                       5733.20     108.95  52.621  &lt; 2e-16 ***
+pair2                                287.78      91.27   3.153  0.00178 ** 
+pair3                                534.33      91.27   5.854 1.26e-08 ***
+pair4                                463.82      91.27   5.082 6.60e-07 ***
+pair5                                144.68      91.27   1.585  0.11398    
+pair6                              -1536.80     104.06 -14.768  &lt; 2e-16 ***
+substrateGM:poly(doseX, 2)1        53018.97    1682.94  31.504  &lt; 2e-16 ***
+substrateOcM:poly(doseX, 2)1       11661.62    1843.57   6.326 9.19e-10 ***
+substratePcM:poly(doseX, 2)1       10272.69    1843.57   5.572 5.62e-08 ***
+substratePM:poly(doseX, 2)1        53163.12    1682.94  31.589  &lt; 2e-16 ***
+substratePMOc:poly(doseX, 2)1      50077.19    1682.94  29.756  &lt; 2e-16 ***
+substratePMPc:poly(doseX, 2)1      32540.54    1682.94  19.336  &lt; 2e-16 ***
+substrateGM:poly(doseX, 2)2         2557.53    1682.94   1.520  0.12965    
+substrateOcM:poly(doseX, 2)2        -867.09    1843.57  -0.470  0.63846    
+substratePcM:poly(doseX, 2)2       -1116.77    1843.57  -0.606  0.54513    
+substratePM:poly(doseX, 2)2         8422.45    1682.94   5.005 9.57e-07 ***
+substratePMOc:poly(doseX, 2)2       3796.90    1682.94   2.256  0.02479 *  
+substratePMPc:poly(doseX, 2)2        831.22    1682.94   0.494  0.62173    
+substrateGM:isTg                     912.86     129.08   7.072 1.08e-11 ***
+substrateOcM:isTg                   1402.96     141.40   9.922  &lt; 2e-16 ***
+substratePcM:isTg                   1781.28     141.40  12.598  &lt; 2e-16 ***
+substratePM:isTg                     454.96     129.08   3.525  0.00049 ***
+substratePMOc:isTg                  1041.94     129.08   8.072 1.70e-14 ***
+substratePMPc:isTg                  1695.44     129.08  13.135  &lt; 2e-16 ***
+substrateGM:poly(doseX, 2)1:isTg    8362.52    2380.04   3.514  0.00051 ***
+substrateOcM:poly(doseX, 2)1:isTg   1301.03    2607.20   0.499  0.61814    
+substratePcM:poly(doseX, 2)1:isTg   4028.73    2607.20   1.545  0.12335    
+substratePM:poly(doseX, 2)1:isTg    3996.22    2380.04   1.679  0.09419 .  
+substratePMOc:poly(doseX, 2)1:isTg 11404.92    2380.04   4.792 2.61e-06 ***
+substratePMPc:poly(doseX, 2)1:isTg 18605.69    2380.04   7.817 9.28e-14 ***
+substrateGM:poly(doseX, 2)2:isTg    1726.31    2380.04   0.725  0.46882    
+substrateOcM:poly(doseX, 2)2:isTg   -494.59    2607.20  -0.190  0.84967    
+substratePcM:poly(doseX, 2)2:isTg   -838.50    2607.20  -0.322  0.74797    
+substratePM:poly(doseX, 2)2:isTg    3078.41    2380.04   1.293  0.19686    
+substratePMOc:poly(doseX, 2)2:isTg  1864.95    2380.04   0.784  0.43391    
+substratePMPc:poly(doseX, 2)2:isTg  2145.02    2380.04   0.901  0.36818    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 499.9 on 299 degrees of freedom
+Multiple R-squared:  0.9957,    Adjusted R-squared:  0.9951 
+F-statistic:  1682 on 41 and 299 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">las=</span><span class="dv">1</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>r<span class="ot">&lt;-</span><span class="fu">residuals</span>(lm.out4)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r<span class="sc">~</span>o2<span class="sc">$</span>substrate,<span class="at">main=</span><span class="st">"Resids Model 4 by Substrate"</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>,<span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r<span class="sc">~</span>o2<span class="sc">$</span>geno,<span class="at">main=</span><span class="st">"Resids Model 4 by Genotype"</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>,<span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="multipleRegression_sta613_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">las=</span><span class="dv">1</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(r<span class="sc">~</span>o2<span class="sc">$</span>dose,<span class="at">main=</span><span class="st">"Resids Model 4 by Dose"</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>,<span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(r,<span class="at">main=</span><span class="st">"Model 4 Residuals"</span>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>,<span class="at">b=</span><span class="fu">sd</span>(r),<span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="multipleRegression_sta613_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
+<ul>
+<li>Test for added value of quadratic term</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm.out3,lm.out4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: y ~ -1 + substrate + doseX:substrate + isTg:substrate + isTg:doseX:substrate + 
+    pair
+Model 2: y ~ -1 + substrate + poly(doseX, 2):substrate + isTg:substrate + 
+    isTg:poly(doseX, 2):substrate + pair
+  Res.Df       RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    311 100356456                                  
+2    299  74722465 12  25633991 8.5478 5.843e-14 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Other questions / issues</p>
+<ul>
+<li>Are the dose by substrate interaction terms needed?</li>
+<li>What about subject effects? Subject and genotype are confounded.</li>
+<li>Anything else?</li>
+</ul>
+</section>
 </section>
 <section id="references" class="level2 unnumbered">
 
